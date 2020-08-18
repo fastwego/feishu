@@ -1,0 +1,16 @@
+on: push
+name: golang-ci
+jobs:
+  checks:
+    name: run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+      - name: run
+        uses: cedrickring/golang-action@1.5.2
+        env:
+          GO111MODULE: "on"
+      - name: Use Go 1.13
+        uses: cedrickring/golang-action/go1.13@1.5.2
+        env:
+            GO111MODULE: "on"
