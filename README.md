@@ -73,6 +73,6 @@ FastWeGo 是一套丰富的 Go 服务开发框架，支持飞书、微信等服�
 
 ## 参与贡献
 
-欢迎提交 pull request / issue / 文档，一起让微信开发更快更好！
+欢迎提交 pull request / issue / 文档，一起让 Golang 开发更快更好！
 
 Faster we go together!
