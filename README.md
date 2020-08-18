@@ -1,6 +1,6 @@
 # fastwego/feishu
 
-A fast feishu development sdk written in Golang
+A fast [feishu](https://open.feishu.cn/) development sdk written in Golang
 
 ## 快速开始 & demo
 
