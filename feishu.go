@@ -69,7 +69,7 @@ func newApp(config AppConfig) (app *App) {
 }
 
 /*
-SetTenantAccessTokenCacheDriver 设置 TenantAccessToken 缓存器 默认为文件缓存：目录 os.TempDir()
+SetCacheDriver 设置 access_token 缓存器 默认为文件缓存：目录 os.TempDir()
 
 驱动接口类型 为 cachego.Cache
 */
@@ -78,7 +78,7 @@ func (app *App) SetCacheDriver(driver cachego.Cache) {
 }
 
 /*
-SetGetTenantAccessTokenHandler 设置 TenantAccessToken 获取方法。默认 从本地缓存获取（过期从微信接口刷新）
+SetGetTenantAccessTokenHandler 设置 TenantAccessToken 获取方法。默认 从本地缓存获取（过期从接口刷新）
 
 如果有多实例服务，可以设置为 Redis 或 RPC 等中控服务器 获取 就可以避免 TenantAccessToken 刷新冲突
 */
@@ -86,6 +86,11 @@ func (app *App) SetGetTenantAccessTokenHandler(f GetTenantAccessTokenFunc) {
 	app.GetTenantAccessTokenHandler = f
 }
 
+/*
+SetGetAppAccessTokenHandler 设置 AppAccessToken 获取方法。默认 从本地缓存获取（过期从接口刷新）
+
+如果有多实例服务，可以设置为 Redis 或 RPC 等中控服务器 获取 就可以避免 TenantAccessToken 刷新冲突
+*/
 func (app *App) SetGetAppAccessTokenHandler(f GetAppAccessTokenFunc) {
 	app.GetAppAccessTokenHandler = f
 }

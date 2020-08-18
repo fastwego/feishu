@@ -70,7 +70,7 @@ func (client *Client) HTTPPost(uri string, payload io.Reader, header http.Header
 	req.Header = header
 
 	if client.Ctx.Logger != nil {
-		client.Ctx.Logger.Printf("GET %s Headers %v", req.URL.String(), req.Header)
+		client.Ctx.Logger.Printf("POST %s Headers %v", req.URL.String(), req.Header)
 	}
 	response, err := httpClient.Do(req)
 	if err != nil {
