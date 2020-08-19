@@ -26,7 +26,6 @@ func ExampleBatchSend() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
 	resp, err := message.BatchSend(ctx, payload)
 
 	fmt.Println(resp, err)
@@ -36,7 +35,6 @@ func ExampleSend() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
 	resp, err := message.Send(ctx, payload)
 
 	fmt.Println(resp, err)
@@ -46,18 +44,7 @@ func ExampleReadInfo() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
 	resp, err := message.ReadInfo(ctx, payload)
-
-	fmt.Println(resp, err)
-}
-
-func ExampleImagePut() {
-	var ctx *feishu.App
-
-	payload := []byte("{}")
-
-	resp, err := message.ImagePut(ctx, payload)
 
 	fmt.Println(resp, err)
 }
@@ -66,7 +53,6 @@ func ExampleImageGet() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
 	resp, err := message.ImageGet(ctx, params)
 
 	fmt.Println(resp, err)
@@ -76,7 +62,6 @@ func ExampleFileGet() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
 	resp, err := message.FileGet(ctx, params)
 
 	fmt.Println(resp, err)
@@ -86,7 +71,6 @@ func ExampleAppNotify() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
 	resp, err := message.AppNotify(ctx, payload)
 
 	fmt.Println(resp, err)

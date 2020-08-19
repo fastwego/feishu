@@ -26,7 +26,6 @@ func ExampleDepartmentBatchAdd() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
 	resp, err := async_batch.DepartmentBatchAdd(ctx, payload)
 
 	fmt.Println(resp, err)
@@ -36,7 +35,6 @@ func ExampleUserBatchAdd() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
 	resp, err := async_batch.UserBatchAdd(ctx, payload)
 
 	fmt.Println(resp, err)
@@ -46,7 +44,6 @@ func ExampleTaskGet() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
 	resp, err := async_batch.TaskGet(ctx, params)
 
 	fmt.Println(resp, err)

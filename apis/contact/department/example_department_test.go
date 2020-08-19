@@ -22,62 +22,56 @@ import (
 	"github.com/fastwego/feishu/apis/contact/department"
 )
 
-func ExampleDepartmentInfoGet() {
+func ExampleInfoGet() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
-	resp, err := department.DepartmentInfoGet(ctx, params)
+	resp, err := department.InfoGet(ctx, params)
 
 	fmt.Println(resp, err)
 }
 
-func ExampleDepartmentSimpleList() {
+func ExampleSimpleList() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
-	resp, err := department.DepartmentSimpleList(ctx, params)
+	resp, err := department.SimpleList(ctx, params)
 
 	fmt.Println(resp, err)
 }
 
-func ExampleDepartmentDetailBatchGet() {
+func ExampleDetailBatchGet() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
-	resp, err := department.DepartmentDetailBatchGet(ctx, params)
-
-	fmt.Println(resp, err)
-}
-
-func ExampleDepartmentAdd() {
-	var ctx *feishu.App
-
-	payload := []byte("{}")
-
-	resp, err := department.DepartmentAdd(ctx, payload)
+	resp, err := department.DetailBatchGet(ctx, params)
 
 	fmt.Println(resp, err)
 }
 
-func ExampleDepartmentDelete() {
+func ExampleAdd() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
-	resp, err := department.DepartmentDelete(ctx, payload)
+	resp, err := department.Add(ctx, payload)
 
 	fmt.Println(resp, err)
 }
 
-func ExampleDepartmentUpdate() {
+func ExampleDelete() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
+	resp, err := department.Delete(ctx, payload)
 
-	resp, err := department.DepartmentUpdate(ctx, payload)
+	fmt.Println(resp, err)
+}
+
+func ExampleUpdate() {
+	var ctx *feishu.App
+
+	payload := []byte("{}")
+	resp, err := department.Update(ctx, payload)
 
 	fmt.Println(resp, err)
 }

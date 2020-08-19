@@ -51,7 +51,7 @@ func TenantCustomAttrGet(ctx *feishu.App) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiTenantCustomAttrGet, header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiTenantCustomAttrGet, header)
 }

@@ -12,22 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package appstore_test
+package app_store_test
 
 import (
 	"fmt"
 	"net/url"
 
 	"github.com/fastwego/feishu"
-	"github.com/fastwego/feishu/apis/appinfo/appstore"
+	"github.com/fastwego/feishu/apis/app/app_store"
 )
+
+func ExampleCheckUser() {
+	var ctx *feishu.App
+
+	params := url.Values{}
+	resp, err := app_store.CheckUser(ctx, params)
+
+	fmt.Println(resp, err)
+}
 
 func ExampleOrderList() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
-	resp, err := appstore.OrderList(ctx, params)
+	resp, err := app_store.OrderList(ctx, params)
 
 	fmt.Println(resp, err)
 }
@@ -36,8 +44,7 @@ func ExampleOrderGet() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
-	resp, err := appstore.OrderGet(ctx, params)
+	resp, err := app_store.OrderGet(ctx, params)
 
 	fmt.Println(resp, err)
 }

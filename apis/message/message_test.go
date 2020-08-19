@@ -35,9 +35,9 @@ func TestBatchSend(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiBatchSend, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiBatchSend, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -71,9 +71,9 @@ func TestSend(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiSend, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiSend, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -107,9 +107,9 @@ func TestReadInfo(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiReadInfo, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiReadInfo, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -138,50 +138,14 @@ func TestReadInfo(t *testing.T) {
 		})
 	}
 }
-func TestImagePut(t *testing.T) {
-	mockResp := map[string][]byte{
-		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
-	}
-	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiImagePut, func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte(resp))
-	})
-
-	type args struct {
-		ctx     *feishu.App
-		payload []byte
-	}
-	tests := []struct {
-		name     string
-		args     args
-		wantResp []byte
-		wantErr  bool
-	}{
-		{name: "case1", args: args{ctx: test.MockApp}, wantResp: mockResp["case1"], wantErr: false},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			resp = mockResp[tt.name]
-			gotResp, err := ImagePut(tt.args.ctx, tt.args.payload)
-			//fmt.Println(string(gotResp), err)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ImagePut() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("ImagePut() gotResp = %v, want %v", gotResp, tt.wantResp)
-			}
-		})
-	}
-}
 func TestImageGet(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiImageGet, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiImageGet, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
@@ -216,9 +180,9 @@ func TestFileGet(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiFileGet, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiFileGet, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
@@ -253,9 +217,9 @@ func TestAppNotify(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiAppNotify, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiAppNotify, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App

@@ -35,9 +35,9 @@ func TestBatchGet(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiBatchGet, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiBatchGet, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
@@ -72,9 +72,9 @@ func TestDepartmentUserList(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiDepartmentUserList, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiDepartmentUserList, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
@@ -109,9 +109,9 @@ func TestDepartmentUserDetailList(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiDepartmentUserDetailList, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiDepartmentUserDetailList, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
@@ -146,9 +146,9 @@ func TestAdd(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiAdd, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiAdd, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -182,9 +182,9 @@ func TestDelete(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiDelete, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiDelete, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -218,9 +218,9 @@ func TestUpdate(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiUpdate, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiUpdate, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -254,9 +254,9 @@ func TestRoleList(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiRoleList, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiRoleList, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
@@ -289,9 +289,9 @@ func TestRoleMembers(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiRoleMembers, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiRoleMembers, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
@@ -326,9 +326,9 @@ func TestBatchGetId(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiBatchGetId, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiBatchGetId, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
@@ -363,9 +363,9 @@ func TestUnionIdBatchGetList(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiUnionIdBatchGetList, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiUnionIdBatchGetList, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
@@ -400,15 +400,15 @@ func TestSearch(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiSearch, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiSearch, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
 
-		params url.Values
-		header http.Header
+		params      url.Values
+		accessToken string
 	}
 	tests := []struct {
 		name     string
@@ -416,12 +416,12 @@ func TestSearch(t *testing.T) {
 		wantResp []byte
 		wantErr  bool
 	}{
-		{name: "case1", args: args{ctx: test.MockApp, header: http.Header{}}, wantResp: mockResp["case1"], wantErr: false},
+		{name: "case1", args: args{ctx: test.MockApp, accessToken: "USER_ACCESS_TOKEN"}, wantResp: mockResp["case1"], wantErr: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := Search(tt.args.ctx, tt.args.params, tt.args.header)
+			gotResp, err := Search(tt.args.ctx, tt.args.params, tt.args.accessToken)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Search() error = %v, wantErr %v", err, tt.wantErr)

@@ -48,9 +48,9 @@ func Info(ctx *feishu.App) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiInfo, header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiInfo, header)
 }
 
 /*
@@ -73,9 +73,9 @@ func Add(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiAdd, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiAdd, bytes.NewReader(payload), header)
 }
 
 /*
@@ -98,7 +98,7 @@ func Remove(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiRemove, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiRemove, bytes.NewReader(payload), header)
 }

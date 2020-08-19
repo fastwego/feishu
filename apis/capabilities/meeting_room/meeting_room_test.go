@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package approve
+package meeting_room
 
 import (
 	"net/http"
+	"net/url"
 	"os"
 	"reflect"
 	"testing"
@@ -29,18 +30,19 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func TestGet(t *testing.T) {
+func TestBuildingList(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiGet, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiBuildingList, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
-		ctx     *feishu.App
-		payload []byte
+		ctx *feishu.App
+
+		params url.Values
 	}
 	tests := []struct {
 		name     string
@@ -53,30 +55,31 @@ func TestGet(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := Get(tt.args.ctx, tt.args.payload)
+			gotResp, err := BuildingList(tt.args.ctx, tt.args.params)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Get() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("BuildingList() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("Get() gotResp = %v, want %v", gotResp, tt.wantResp)
+				t.Errorf("BuildingList() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}
 }
-func TestInstanceList(t *testing.T) {
+func TestBuildingBatchGet(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiInstanceList, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiBuildingBatchGet, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
-		ctx     *feishu.App
-		payload []byte
+		ctx *feishu.App
+
+		params url.Values
 	}
 	tests := []struct {
 		name     string
@@ -89,30 +92,31 @@ func TestInstanceList(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := InstanceList(tt.args.ctx, tt.args.payload)
+			gotResp, err := BuildingBatchGet(tt.args.ctx, tt.args.params)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("InstanceList() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("BuildingBatchGet() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("InstanceList() gotResp = %v, want %v", gotResp, tt.wantResp)
+				t.Errorf("BuildingBatchGet() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}
 }
-func TestInstanceGet(t *testing.T) {
+func TestMeetingRoomList(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiInstanceGet, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiMeetingRoomList, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
-		ctx     *feishu.App
-		payload []byte
+		ctx *feishu.App
+
+		params url.Values
 	}
 	tests := []struct {
 		name     string
@@ -125,30 +129,31 @@ func TestInstanceGet(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := InstanceGet(tt.args.ctx, tt.args.payload)
+			gotResp, err := MeetingRoomList(tt.args.ctx, tt.args.params)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("InstanceGet() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("MeetingRoomList() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("InstanceGet() gotResp = %v, want %v", gotResp, tt.wantResp)
+				t.Errorf("MeetingRoomList() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}
 }
-func TestInstanceCreate(t *testing.T) {
+func TestMeetingRoomBatchGet(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiInstanceCreate, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiMeetingRoomBatchGet, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
-		ctx     *feishu.App
-		payload []byte
+		ctx *feishu.App
+
+		params url.Values
 	}
 	tests := []struct {
 		name     string
@@ -161,30 +166,31 @@ func TestInstanceCreate(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := InstanceCreate(tt.args.ctx, tt.args.payload)
+			gotResp, err := MeetingRoomBatchGet(tt.args.ctx, tt.args.params)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("InstanceCreate() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("MeetingRoomBatchGet() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("InstanceCreate() gotResp = %v, want %v", gotResp, tt.wantResp)
+				t.Errorf("MeetingRoomBatchGet() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}
 }
-func TestApprove(t *testing.T) {
+func TestMeetingRoomFreeBusyBatchGet(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiApprove, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiMeetingRoomFreeBusyBatchGet, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
-		ctx     *feishu.App
-		payload []byte
+		ctx *feishu.App
+
+		params url.Values
 	}
 	tests := []struct {
 		name     string
@@ -197,26 +203,26 @@ func TestApprove(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := Approve(tt.args.ctx, tt.args.payload)
+			gotResp, err := MeetingRoomFreeBusyBatchGet(tt.args.ctx, tt.args.params)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Approve() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("MeetingRoomFreeBusyBatchGet() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("Approve() gotResp = %v, want %v", gotResp, tt.wantResp)
+				t.Errorf("MeetingRoomFreeBusyBatchGet() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}
 }
-func TestReject(t *testing.T) {
+func TestInstanceReply(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiReject, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiInstanceReply, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -233,26 +239,26 @@ func TestReject(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := Reject(tt.args.ctx, tt.args.payload)
+			gotResp, err := InstanceReply(tt.args.ctx, tt.args.payload)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Reject() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("InstanceReply() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("Reject() gotResp = %v, want %v", gotResp, tt.wantResp)
+				t.Errorf("InstanceReply() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}
 }
-func TestTransfer(t *testing.T) {
+func TestBuildingCreate(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiTransfer, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiBuildingCreate, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -269,26 +275,26 @@ func TestTransfer(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := Transfer(tt.args.ctx, tt.args.payload)
+			gotResp, err := BuildingCreate(tt.args.ctx, tt.args.payload)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Transfer() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("BuildingCreate() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("Transfer() gotResp = %v, want %v", gotResp, tt.wantResp)
+				t.Errorf("BuildingCreate() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}
 }
-func TestCancel(t *testing.T) {
+func TestBuildingUpdate(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiCancel, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiBuildingUpdate, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -305,26 +311,26 @@ func TestCancel(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := Cancel(tt.args.ctx, tt.args.payload)
+			gotResp, err := BuildingUpdate(tt.args.ctx, tt.args.payload)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Cancel() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("BuildingUpdate() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("Cancel() gotResp = %v, want %v", gotResp, tt.wantResp)
+				t.Errorf("BuildingUpdate() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}
 }
-func TestUpload(t *testing.T) {
+func TestBuildingDelete(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiUpload, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiBuildingDelete, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -341,30 +347,31 @@ func TestUpload(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := Upload(tt.args.ctx, tt.args.payload)
+			gotResp, err := BuildingDelete(tt.args.ctx, tt.args.payload)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Upload() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("BuildingDelete() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("Upload() gotResp = %v, want %v", gotResp, tt.wantResp)
+				t.Errorf("BuildingDelete() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}
 }
-func TestExternalInstanceCreate(t *testing.T) {
+func TestBuildingBatchGetById(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiExternalInstanceCreate, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiBuildingBatchGetById, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
-		ctx     *feishu.App
-		payload []byte
+		ctx *feishu.App
+
+		params url.Values
 	}
 	tests := []struct {
 		name     string
@@ -377,26 +384,26 @@ func TestExternalInstanceCreate(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := ExternalInstanceCreate(tt.args.ctx, tt.args.payload)
+			gotResp, err := BuildingBatchGetById(tt.args.ctx, tt.args.params)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("ExternalInstanceCreate() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("BuildingBatchGetById() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("ExternalInstanceCreate() gotResp = %v, want %v", gotResp, tt.wantResp)
+				t.Errorf("BuildingBatchGetById() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}
 }
-func TestCreate(t *testing.T) {
+func TestMeetingRoomCreate(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiCreate, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiMeetingRoomCreate, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -413,26 +420,26 @@ func TestCreate(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := Create(tt.args.ctx, tt.args.payload)
+			gotResp, err := MeetingRoomCreate(tt.args.ctx, tt.args.payload)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Create() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("MeetingRoomCreate() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("Create() gotResp = %v, want %v", gotResp, tt.wantResp)
+				t.Errorf("MeetingRoomCreate() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}
 }
-func TestInstanceCc(t *testing.T) {
+func TestMeetingRoomUpdate(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiInstanceCc, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiMeetingRoomUpdate, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -449,26 +456,26 @@ func TestInstanceCc(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := InstanceCc(tt.args.ctx, tt.args.payload)
+			gotResp, err := MeetingRoomUpdate(tt.args.ctx, tt.args.payload)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("InstanceCc() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("MeetingRoomUpdate() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("InstanceCc() gotResp = %v, want %v", gotResp, tt.wantResp)
+				t.Errorf("MeetingRoomUpdate() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}
 }
-func TestSubscribe(t *testing.T) {
+func TestMeetingRoomDelete(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiSubscribe, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiMeetingRoomDelete, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -485,30 +492,31 @@ func TestSubscribe(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := Subscribe(tt.args.ctx, tt.args.payload)
+			gotResp, err := MeetingRoomDelete(tt.args.ctx, tt.args.payload)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Subscribe() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("MeetingRoomDelete() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("Subscribe() gotResp = %v, want %v", gotResp, tt.wantResp)
+				t.Errorf("MeetingRoomDelete() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}
 }
-func TestUnsubscribe(t *testing.T) {
+func TestMeetingRoomBatchGetById(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiUnsubscribe, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiMeetingRoomBatchGetById, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
-		ctx     *feishu.App
-		payload []byte
+		ctx *feishu.App
+
+		params url.Values
 	}
 	tests := []struct {
 		name     string
@@ -521,14 +529,86 @@ func TestUnsubscribe(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := Unsubscribe(tt.args.ctx, tt.args.payload)
+			gotResp, err := MeetingRoomBatchGetById(tt.args.ctx, tt.args.params)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Unsubscribe() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("MeetingRoomBatchGetById() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("Unsubscribe() gotResp = %v, want %v", gotResp, tt.wantResp)
+				t.Errorf("MeetingRoomBatchGetById() gotResp = %v, want %v", gotResp, tt.wantResp)
+			}
+		})
+	}
+}
+func TestCountryList(t *testing.T) {
+	mockResp := map[string][]byte{
+		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
+	}
+	var resp []byte
+	test.MockRouter.HandleFunc(apiCountryList, func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(resp))
+	}).Methods("GET")
+
+	type args struct {
+		ctx *feishu.App
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantResp []byte
+		wantErr  bool
+	}{
+		{name: "case1", args: args{ctx: test.MockApp}, wantResp: mockResp["case1"], wantErr: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			resp = mockResp[tt.name]
+			gotResp, err := CountryList(tt.args.ctx)
+			//fmt.Println(string(gotResp), err)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("CountryList() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotResp, tt.wantResp) {
+				t.Errorf("CountryList() gotResp = %v, want %v", gotResp, tt.wantResp)
+			}
+		})
+	}
+}
+func TestDistrictList(t *testing.T) {
+	mockResp := map[string][]byte{
+		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
+	}
+	var resp []byte
+	test.MockRouter.HandleFunc(apiDistrictList, func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(resp))
+	}).Methods("GET")
+
+	type args struct {
+		ctx *feishu.App
+
+		params url.Values
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantResp []byte
+		wantErr  bool
+	}{
+		{name: "case1", args: args{ctx: test.MockApp}, wantResp: mockResp["case1"], wantErr: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			resp = mockResp[tt.name]
+			gotResp, err := DistrictList(tt.args.ctx, tt.args.params)
+			//fmt.Println(string(gotResp), err)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("DistrictList() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotResp, tt.wantResp) {
+				t.Errorf("DistrictList() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}

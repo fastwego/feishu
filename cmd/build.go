@@ -23,6 +23,8 @@ import (
 	"path"
 	"strings"
 
+	"github.com/fastwego/feishu"
+
 	"github.com/iancoleman/strcase"
 )
 
@@ -30,8 +32,8 @@ func main() {
 	var pkgFlag string
 	flag.StringVar(&pkgFlag, "package", "user", "")
 	flag.Parse()
-	for _, group := range apiConfig {
-		if group.Package == "oauth" { // 单独处理 oauth 模块
+	for _, group := range apiConfig2 {
+		if group.Package == "authen" { // 单独处理 authen 模块
 			continue
 		}
 
@@ -70,11 +72,17 @@ func build(group ApiGroup) {
 	var exampleFuncs []string
 
 	for _, api := range group.Apis {
+
 		tpl := postFuncTpl
 		_FUNC_NAME_ := ""
 		_GET_PARAMS_ := ""
 		_GET_SUFFIX_PARAMS_ := ""
 		_PAYLOAD_ := ""
+		_SERVERURL_ := "feishu.FeishuServerUrl"
+		if strings.Contains(api.Request, feishu.FeishuServerUrl2) {
+			_SERVERURL_ = "feishu.FeishuServerUrl2"
+		}
+
 		switch {
 		case strings.Contains(api.Request, "GET http"):
 			tpl = getFuncTpl
@@ -82,6 +90,10 @@ func build(group ApiGroup) {
 			tpl = deleteFuncTpl
 		case strings.Contains(api.Request, "POST http"):
 			tpl = postFuncTpl
+		case strings.Contains(api.Request, "PUT http"):
+			tpl = putFuncTpl
+		case strings.Contains(api.Request, "PATCH http"):
+			tpl = patchFuncTpl
 		}
 		if len(api.GetParams) > 0 || len(api.PathParams) > 0 {
 			_GET_PARAMS_ = `, params url.Values`
@@ -94,6 +106,7 @@ func build(group ApiGroup) {
 		}
 
 		split := strings.Split(api.Request, " ")
+		_METHOD_ := split[0]
 		parseUrl, _ := url.Parse(split[1])
 
 		if api.FuncName == "" {
@@ -104,11 +117,11 @@ func build(group ApiGroup) {
 
 		_APIVARNAME_ := "api" + _FUNC_NAME_
 		_HEADER_ := tenantAccessTokenTpl
-		_HEADERPARAM_ := ""
+		_ACCESSTOKENPARAM_ := ""
 		if api.AccessToken == "app" {
 			_HEADER_ = appAccessTokenTpl
 		} else if api.AccessToken == "user" {
-			_HEADERPARAM_ = ", header http.Header"
+			_ACCESSTOKENPARAM_ = ", accessToken string"
 			_HEADER_ = userAccessTokenTpl
 		}
 
@@ -122,8 +135,17 @@ func build(group ApiGroup) {
 			_APIVARNAME_ = "api"
 		}
 
+		isUploadApi := false
+		if (group.Package == "message" && api.FuncName == "ImagePut") || (group.Package == "capabilities/approval" && api.FuncName == "Upload") {
+			file, err := ioutil.ReadFile("tpl/" + api.FuncName + ".tpl")
+			if err != nil {
+				continue
+			}
+			tpl = commentTpl + string(file)
+			isUploadApi = true
+		}
 		tpl = strings.ReplaceAll(tpl, "_HEADER_", _HEADER_)
-		tpl = strings.ReplaceAll(tpl, "_HEADERPARAM_", _HEADERPARAM_)
+		tpl = strings.ReplaceAll(tpl, "_ACCESSTOKENPARAM_", _ACCESSTOKENPARAM_)
 		tpl = strings.ReplaceAll(tpl, "_TITLE_", api.Name)
 		tpl = strings.ReplaceAll(tpl, "_DESCRIPTION_", api.Description)
 		tpl = strings.ReplaceAll(tpl, "_REQUEST_", api.Request)
@@ -134,6 +156,7 @@ func build(group ApiGroup) {
 		tpl = strings.ReplaceAll(tpl, "_PAYLOAD_", _PAYLOAD_)
 		tpl = strings.ReplaceAll(tpl, "_PATH_PARAMS_", _PATH_PARAMS_)
 		tpl = strings.ReplaceAll(tpl, "_APIVARNAME_", _APIVARNAME_)
+		tpl = strings.ReplaceAll(tpl, "_SERVERURL_", _SERVERURL_)
 
 		funcs = append(funcs, tpl)
 
@@ -142,28 +165,29 @@ func build(group ApiGroup) {
 
 		consts = append(consts, tpl)
 
+		if isUploadApi { // 不用 test case
+			continue
+		}
+
 		// TestFunc
 		_TEST_ARGS_STRUCT_ := ""
-		_EXAMPLE_HEADER_STMT_ := ""
-		_HEADERINIT_ := ""
+		_ACCESSTOKENINIT_ := ""
 		switch {
 		case strings.Contains(api.Request, "GET http") || strings.Contains(api.Request, "DELETE http"):
 			_TEST_ARGS_STRUCT_ = `ctx *feishu.App, ` + _GET_PARAMS_
 			if api.AccessToken == "user" {
-				_TEST_ARGS_STRUCT_ += `, header http.Header`
-				_EXAMPLE_HEADER_STMT_ = `header := http.Header{}`
-				_HEADERINIT_ = `, header: http.Header{}`
+				_TEST_ARGS_STRUCT_ += `, accessToken string`
+				_ACCESSTOKENINIT_ = `, accessToken: "USER_ACCESS_TOKEN"`
 			}
-		case strings.Contains(api.Request, "POST http"):
+		case strings.Contains(api.Request, "POST http") || strings.Contains(api.Request, "PUT http") || strings.Contains(api.Request, "PATCH http"):
 			_TEST_ARGS_STRUCT_ = `ctx *feishu.App, payload []byte`
 
 			if _GET_PARAMS_ != "" {
 				_TEST_ARGS_STRUCT_ += `,` + _GET_PARAMS_
 			}
 			if api.AccessToken == "user" {
-				_TEST_ARGS_STRUCT_ += `, header http.Header`
-				_EXAMPLE_HEADER_STMT_ = `header := http.Header{}`
-				_HEADERINIT_ = `, header: http.Header{}`
+				_TEST_ARGS_STRUCT_ += `, accessToken string`
+				_ACCESSTOKENINIT_ = `, accessToken: "USER_ACCESS_TOKEN"`
 			}
 		}
 		_TEST_ARGS_STRUCT_ = strings.ReplaceAll(_TEST_ARGS_STRUCT_, ",", "\n")
@@ -199,7 +223,8 @@ func build(group ApiGroup) {
 		tpl = strings.ReplaceAll(testFuncTpl, "_FUNC_NAME_", _FUNC_NAME_)
 		tpl = strings.ReplaceAll(tpl, "_TEST_ARGS_STRUCT_", _TEST_ARGS_STRUCT_)
 		tpl = strings.ReplaceAll(tpl, "_TEST_FUNC_SIGNATURE_", _TEST_FUNC_SIGNATURE_)
-		tpl = strings.ReplaceAll(tpl, "_HEADERINIT_", _HEADERINIT_)
+		tpl = strings.ReplaceAll(tpl, "_ACCESSTOKENINIT_", _ACCESSTOKENINIT_)
+		tpl = strings.ReplaceAll(tpl, "_METHOD_", _METHOD_)
 		testFuncs = append(testFuncs, tpl)
 
 		//Example
@@ -208,7 +233,6 @@ func build(group ApiGroup) {
 		tpl = strings.ReplaceAll(tpl, "_PACKAGE_", path.Base(group.Package))
 		tpl = strings.ReplaceAll(tpl, "_TEST_FUNC_SIGNATURE_", strings.ReplaceAll(_TEST_FUNC_SIGNATURE_, "tt.args.", ""))
 		tpl = strings.ReplaceAll(tpl, "_EXAMPLE_ARGS_STMT_", _EXAMPLE_ARGS_STMT_)
-		tpl = strings.ReplaceAll(tpl, "_EXAMPLE_HEADER_STMT_", _EXAMPLE_HEADER_STMT_)
 		exampleFuncs = append(exampleFuncs, tpl)
 
 	}
@@ -243,26 +267,40 @@ See: _SEE_
 _REQUEST_
 */`
 var postFuncTpl = commentTpl + `
-func _FUNC_NAME_(ctx *feishu.App, payload []byte_GET_PARAMS__HEADERPARAM_) (resp []byte, err error) {
+func _FUNC_NAME_(ctx *feishu.App, payload []byte_GET_PARAMS__ACCESSTOKENPARAM_) (resp []byte, err error) {
 	_PATH_PARAMS_
 	_HEADER_
-	return ctx.Client.HTTPPost(_APIVARNAME__GET_SUFFIX_PARAMS_, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(_SERVERURL_+_APIVARNAME__GET_SUFFIX_PARAMS_, bytes.NewReader(payload), header)
 }
 `
 var getFuncTpl = commentTpl + `
-func _FUNC_NAME_(ctx *feishu.App_GET_PARAMS__HEADERPARAM_) (resp []byte, err error) {
+func _FUNC_NAME_(ctx *feishu.App_GET_PARAMS__ACCESSTOKENPARAM_) (resp []byte, err error) {
 	_PATH_PARAMS_
 	_HEADER_
 
-	return ctx.Client.HTTPGet(_APIVARNAME__GET_SUFFIX_PARAMS_,header)
+	return ctx.Client.HTTPGet(_SERVERURL_+_APIVARNAME__GET_SUFFIX_PARAMS_,header)
 }
 `
 var deleteFuncTpl = commentTpl + `
-func _FUNC_NAME_(ctx *feishu.App_GET_PARAMS__HEADERPARAM_) (resp []byte, err error) {
+func _FUNC_NAME_(ctx *feishu.App_GET_PARAMS__ACCESSTOKENPARAM_) (resp []byte, err error) {
 	_PATH_PARAMS_
 	_HEADER_
 
-	return ctx.Client.HTTPDelete(_APIVARNAME__GET_SUFFIX_PARAMS_,header)
+	return ctx.Client.HTTPDelete(_SERVERURL_+_APIVARNAME__GET_SUFFIX_PARAMS_,header)
+}
+`
+var putFuncTpl = commentTpl + `
+func _FUNC_NAME_(ctx *feishu.App, payload []byte_GET_PARAMS__ACCESSTOKENPARAM_) (resp []byte, err error) {
+	_PATH_PARAMS_
+	_HEADER_
+	return ctx.Client.HTTPPut(_SERVERURL_+_APIVARNAME__GET_SUFFIX_PARAMS_, bytes.NewReader(payload), header)
+}
+`
+var patchFuncTpl = commentTpl + `
+func _FUNC_NAME_(ctx *feishu.App, payload []byte_GET_PARAMS__ACCESSTOKENPARAM_) (resp []byte, err error) {
+	_PATH_PARAMS_
+	_HEADER_
+	return ctx.Client.HTTPPatch(_SERVERURL_+_APIVARNAME__GET_SUFFIX_PARAMS_, bytes.NewReader(payload), header)
 }
 `
 var tenantAccessTokenTpl = `
@@ -272,7 +310,7 @@ var tenantAccessTokenTpl = `
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 `
 
 var appAccessTokenTpl = `
@@ -282,11 +320,13 @@ var appAccessTokenTpl = `
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 `
 
 var userAccessTokenTpl = `
-	header.Set("Content-appType", "application/json")
+	header := http.Header{}
+	header.Set("Authorization", "Bearer "+accessToken)
+	header.Set("Content-Type", "application/json")
 `
 
 var fieldTpl = `
@@ -321,9 +361,9 @@ func Test_FUNC_NAME_(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(api_FUNC_NAME_, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(api_FUNC_NAME_, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("_METHOD_")
 
 	type args struct {
 		_TEST_ARGS_STRUCT_
@@ -334,7 +374,7 @@ func Test_FUNC_NAME_(t *testing.T) {
 		wantResp []byte
 		wantErr  bool
 	}{
-		{name: "case1", args: args{ctx: test.MockApp_HEADERINIT_}, wantResp: mockResp["case1"], wantErr: false},
+		{name: "case1", args: args{ctx: test.MockApp_ACCESSTOKENINIT_}, wantResp: mockResp["case1"], wantErr: false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -361,7 +401,6 @@ func Example_FUNC_NAME_() {
 	var ctx *feishu.App
 
 	_EXAMPLE_ARGS_STMT_
-	_EXAMPLE_HEADER_STMT_
 	resp, err := _PACKAGE_._FUNC_NAME_(_TEST_FUNC_SIGNATURE_)
 
 	fmt.Println(resp, err)

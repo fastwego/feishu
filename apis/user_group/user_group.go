@@ -48,9 +48,9 @@ func GroupList(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiGroupList+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiGroupList+"?"+params.Encode(), header)
 }
 
 /*
@@ -73,9 +73,9 @@ func Members(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiMembers+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiMembers+"?"+params.Encode(), header)
 }
 
 /*
@@ -98,7 +98,7 @@ func Search(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiSearch+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiSearch+"?"+params.Encode(), header)
 }

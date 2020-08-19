@@ -26,7 +26,6 @@ func ExampleGroupList() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
 	resp, err := user_group.GroupList(ctx, params)
 
 	fmt.Println(resp, err)
@@ -36,7 +35,6 @@ func ExampleMembers() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
 	resp, err := user_group.Members(ctx, params)
 
 	fmt.Println(resp, err)
@@ -46,7 +44,6 @@ func ExampleSearch() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
 	resp, err := user_group.Search(ctx, params)
 
 	fmt.Println(resp, err)

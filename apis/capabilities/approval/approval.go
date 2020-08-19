@@ -12,12 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package approve 审批
-package approve
+// Package approval 审批
+package approval
 
 import (
 	"bytes"
+	"io"
+	"mime/multipart"
 	"net/http"
+	"net/url"
+	"os"
+	"path"
 
 	"github.com/fastwego/feishu"
 )
@@ -32,8 +37,11 @@ const (
 	apiTransfer               = "/approval/openapi/v2/instance/transfer"
 	apiCancel                 = "/approval/openapi/v2/instance/cancel"
 	apiUpload                 = "/approval/openapi/v2/file/upload"
-	apiExternalInstanceCreate = "/approval/openapi/v2/external/instance/create"
-	apiCreate                 = "/approval/openapi/v2/approval/create"
+	apiExternalInstanceCreate = "/approval/openapi/v3/external/approval/create"
+	apiExternalInstanceCheck  = "/approval/openapi/v3/external/instance/check"
+	apiMessageSend            = "/approval/openapi/v1/message/send"
+	apiMessageUpdate          = "/approval/openapi/v1/message/update"
+	apiApprovalCreate         = "/approval/openapi/v2/approval/create"
 	apiInstanceCc             = "/approval/openapi/v2/instance/cc"
 	apiSubscribe              = "/approval/openapi/v2/subscription/subscribe"
 	apiUnsubscribe            = "/approval/openapi/v2/subscription/unsubscribe"
@@ -60,9 +68,9 @@ func Get(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiGet, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl2+apiGet, bytes.NewReader(payload), header)
 }
 
 /*
@@ -87,9 +95,9 @@ func InstanceList(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiInstanceList, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl2+apiInstanceList, bytes.NewReader(payload), header)
 }
 
 /*
@@ -111,9 +119,9 @@ func InstanceGet(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiInstanceGet, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl2+apiInstanceGet, bytes.NewReader(payload), header)
 }
 
 /*
@@ -135,9 +143,9 @@ func InstanceCreate(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiInstanceCreate, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl2+apiInstanceCreate, bytes.NewReader(payload), header)
 }
 
 /*
@@ -162,9 +170,9 @@ func Approve(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiApprove, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl2+apiApprove, bytes.NewReader(payload), header)
 }
 
 /*
@@ -188,9 +196,9 @@ func Reject(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiReject, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl2+apiReject, bytes.NewReader(payload), header)
 }
 
 /*
@@ -214,9 +222,9 @@ func Transfer(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiTransfer, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl2+apiTransfer, bytes.NewReader(payload), header)
 }
 
 /*
@@ -240,9 +248,9 @@ func Cancel(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiCancel, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl2+apiCancel, bytes.NewReader(payload), header)
 }
 
 /*
@@ -258,7 +266,39 @@ See: https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uUDOyUjL1gjM14SN4ITN
 
 POST https://www.feishu.cn/approval/openapi/v2/file/upload
 */
-func Upload(ctx *feishu.App, payload []byte) (resp []byte, err error) {
+func Upload(ctx *feishu.App, content string, params url.Values) (resp []byte, err error) {
+
+	r, w := io.Pipe()
+	m := multipart.NewWriter(w)
+	go func() {
+		defer w.Close()
+		defer m.Close()
+
+		part, err := m.CreateFormFile("content", path.Base(content))
+		if err != nil {
+			return
+		}
+		file, err := os.Open(content)
+		if err != nil {
+			return
+		}
+		defer file.Close()
+		if _, err = io.Copy(part, file); err != nil {
+			return
+		}
+
+		// field
+		err = m.WriteField("type", params.Get("type"))
+		if err != nil {
+			return
+		}
+
+		err = m.WriteField("name", path.Base(content))
+		if err != nil {
+			return
+		}
+
+	}()
 
 	accessToken, err := ctx.GetTenantAccessTokenHandler()
 	if err != nil {
@@ -266,26 +306,20 @@ func Upload(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", m.FormDataContentType())
 
-	return ctx.Client.HTTPPost(apiUpload, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl2+apiUpload, r, header)
 }
 
 /*
-三方审批实例同步
+三方审批定义创建/同步
+
+企业通过第三方审批定义创建接口，帮助企业创建审批定义，创建审批定义后，可以将该审批定义下的审批实例推送到飞书审批应用。
 
 
-用于第三方审批的实例同步。
-使用前需确保已经在审批后台创建第三方审批。
+See: https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uIDNyYjLyQjM24iM0IjN
 
-> 审批实例：员工发起审批时产生的对象，详情参见 [开发指南](/ssl:ttdoc/ugTM5UjL4ETO14COxkTN/ukDNyUjL5QjM14SO0ITN)
->
-**权限说明** ：需要获取 访问审批应用 权限。
-
-
-See: https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uczM3UjL3MzN14yNzcTN
-
-POST https://www.feishu.cn/approval/openapi/v2/external/instance/create
+POST https://www.feishu.cn/approval/openapi/v3/external/approval/create
 */
 func ExternalInstanceCreate(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 
@@ -295,9 +329,81 @@ func ExternalInstanceCreate(ctx *feishu.App, payload []byte) (resp []byte, err e
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiExternalInstanceCreate, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl2+apiExternalInstanceCreate, bytes.NewReader(payload), header)
+}
+
+/*
+三方审批实例校验
+
+校验三方审批实例数据，用于判断服务端数据是否为最新的。用户提交实例最新更新时间，如果服务端不存在该实例，或者服务端实例更新时间不是最新的，则返回对应实例 id。
+
+例如，用户可以每隔5分钟，将最近5分钟产生的实例使用该接口进行对比。
+**权限说明** ：需要获取 访问审批应用 权限。
+
+
+See: https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uUDNyYjL1QjM24SN0IjN
+
+POST https://www.feishu.cn/approval/openapi/v3/external/instance/check
+*/
+func ExternalInstanceCheck(ctx *feishu.App, payload []byte) (resp []byte, err error) {
+
+	accessToken, err := ctx.GetTenantAccessTokenHandler()
+	if err != nil {
+		return
+	}
+	header := http.Header{}
+	header.Set("Authorization", "Bearer "+accessToken)
+	header.Set("Content-Type", "application/json")
+
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl2+apiExternalInstanceCheck, bytes.NewReader(payload), header)
+}
+
+/*
+发送审批Bot消息
+
+此接口可以用来通过飞书审批的Bot推送消息给用户，当有新的审批待办，或者审批待办的状态有更新时，可以通过飞书审批的Bot告知用户。当然开发者也可以利用开放平台的能力自建一个全新的Bot，用来推送审批相关信息。
+
+
+See: https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/ugDNyYjL4QjM24CO0IjN
+
+POST https://www.feishu.cn/approval/openapi/v1/message/send
+*/
+func MessageSend(ctx *feishu.App, payload []byte) (resp []byte, err error) {
+
+	accessToken, err := ctx.GetTenantAccessTokenHandler()
+	if err != nil {
+		return
+	}
+	header := http.Header{}
+	header.Set("Authorization", "Bearer "+accessToken)
+	header.Set("Content-Type", "application/json")
+
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl2+apiMessageSend, bytes.NewReader(payload), header)
+}
+
+/*
+更新审批Bot消息
+
+此接口可以根据审批bot消息id及相应状态，更新相应的审批bot消息。例如，给用户推送了审批待办消息，当用户处理该消息后，可以将之前推送的Bot消息更新为已审批。
+
+
+See: https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uAjNyYjLwYjM24CM2IjN
+
+POST https://www.feishu.cn/approval/openapi/v1/message/update
+*/
+func MessageUpdate(ctx *feishu.App, payload []byte) (resp []byte, err error) {
+
+	accessToken, err := ctx.GetTenantAccessTokenHandler()
+	if err != nil {
+		return
+	}
+	header := http.Header{}
+	header.Set("Authorization", "Bearer "+accessToken)
+	header.Set("Content-Type", "application/json")
+
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl2+apiMessageUpdate, bytes.NewReader(payload), header)
 }
 
 /*
@@ -313,7 +419,7 @@ See: https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uUzNyYjL1cjM24SN3IjN
 
 POST https://www.feishu.cn/approval/openapi/v2/approval/create
 */
-func Create(ctx *feishu.App, payload []byte) (resp []byte, err error) {
+func ApprovalCreate(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 
 	accessToken, err := ctx.GetTenantAccessTokenHandler()
 	if err != nil {
@@ -321,9 +427,9 @@ func Create(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiCreate, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl2+apiApprovalCreate, bytes.NewReader(payload), header)
 }
 
 /*
@@ -347,9 +453,9 @@ func InstanceCc(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiInstanceCc, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl2+apiInstanceCc, bytes.NewReader(payload), header)
 }
 
 /*
@@ -371,9 +477,9 @@ func Subscribe(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiSubscribe, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl2+apiSubscribe, bytes.NewReader(payload), header)
 }
 
 /*
@@ -395,7 +501,7 @@ func Unsubscribe(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiUnsubscribe, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl2+apiUnsubscribe, bytes.NewReader(payload), header)
 }

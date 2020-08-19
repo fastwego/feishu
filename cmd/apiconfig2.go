@@ -39,6 +39,9 @@ var apiConfig2 = []ApiGroup{
 				Request:  "GET https://open.feishu.cn/open-apis/calendar/v3/calendar_list",
 				See:      "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uMTM14yMxUjLzETN",
 				FuncName: "CalendarList",
+				GetParams: []Param{
+					{Name: `max_results`, Type: `string`},
+				},
 			},
 			{
 				Name: "创建日历",
@@ -57,6 +60,18 @@ var apiConfig2 = []ApiGroup{
 				Request:  "DELETE https://open.feishu.cn/open-apis/calendar/v3/calendars/:calendarId",
 				See:      "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uUTM14SNxUjL1ETN",
 				FuncName: "DeleteCalendarById",
+				PathParams: []Param{
+					{Name: "", Type: "string"},
+				},
+			},
+			{
+				Name: "更新日历",
+				Description: `
+该接口用于修改指定日历的信息。
+`,
+				Request:  "PATCH https://open.feishu.cn/open-apis/calendar/v3/calendars/:calendarId",
+				See:      "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uYTM14iNxUjL2ETN",
+				FuncName: "UpdateCalendarById",
 				PathParams: []Param{
 					{Name: "", Type: "string"},
 				},
@@ -86,6 +101,45 @@ var apiConfig2 = []ApiGroup{
 				},
 			},
 			{
+				Name: "获取日程列表",
+				Description: `
+该接口用于获取指定日历下的日程列表。
+`,
+				Request:  "GET https://open.feishu.cn/open-apis/calendar/v3/calendars/:calendarId/events",
+				See:      "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/ukTM14SOxUjL5ETN",
+				FuncName: "GetEvents",
+				PathParams: []Param{
+					{Name: "", Type: "string"},
+				},
+				GetParams: []Param{
+					{Name: `max_results`, Type: `string`},
+				},
+			},
+			{
+				Name: "删除日程",
+				Description: `
+该接口用于删除指定日历下的日程。
+`,
+				Request:  "DELETE https://open.feishu.cn/open-apis/calendar/v3/calendars/:calendarId/events/:eventId",
+				See:      "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uAjM14CMyUjLwITN",
+				FuncName: "DeleteEventById",
+				PathParams: []Param{
+					{Name: "", Type: "string"},
+				},
+			},
+			{
+				Name: "更新日程",
+				Description: `
+该接口用于更新日程信息。
+`,
+				Request:  "PATCH https://open.feishu.cn/open-apis/calendar/v3/calendars/:calendarId/events/:eventId",
+				See:      "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uEjM14SMyUjLxITN",
+				FuncName: "UpdateEventById",
+				PathParams: []Param{
+					{Name: "", Type: "string"},
+				},
+			},
+			{
 				Name: "邀请/移除日程参与者",
 				Description: `
 邀请一个或多个用户加入日程；
@@ -105,7 +159,19 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:  "GET https://open.feishu.cn/open-apis/calendar/v3/calendars/:calendarId/acl",
 				See:      "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uMjM14yMyUjLzITN",
-				FuncName: "Acl",
+				FuncName: "GetAcl",
+				PathParams: []Param{
+					{Name: "", Type: "string"},
+				},
+			},
+			{
+				Name: "创建访问控制",
+				Description: `
+该接口用于邀请一个用户加入日历。
+`,
+				Request:  "POST https://open.feishu.cn/open-apis/calendar/v3/calendars/:calendarId/acl",
+				See:      "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uQjM14CNyUjL0ITN",
+				FuncName: "CreateAcl",
 				PathParams: []Param{
 					{Name: "", Type: "string"},
 				},
@@ -117,7 +183,7 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:  "DELETE https://open.feishu.cn/open-apis/calendar/v3/calendars/:calendarId/acl/:ruleId",
 				See:      "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uUjM14SNyUjL1ITN",
-				FuncName: "DeleteAclByRuleId",
+				FuncName: "DeleteAcl",
 				PathParams: []Param{
 					{Name: "", Type: "string"},
 				},
@@ -158,8 +224,8 @@ var apiConfig2 = []ApiGroup{
 		},
 	},
 	{
-		Name:    `云文档`,
-		Package: `capabilities/document`,
+		Name:    `云文档/folder`,
+		Package: `capabilities/document/folder`,
 		Apis: []Api{
 
 			{
@@ -170,7 +236,7 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "POST https://open.feishu.cn/open-apis/drive/explorer/v2/folder/:folderToken",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/ukTNzUjL5UzM14SO1MTN",
-				FuncName:    "CreateFolder",
+				FuncName:    "Create",
 				AccessToken: "user",
 				PathParams: []Param{
 					{Name: "", Type: "string"},
@@ -179,8 +245,18 @@ var apiConfig2 = []ApiGroup{
 			{
 				Name: "获取文件夹元信息",
 				Description: `
-# 获取root folder（我的空间） meta该接口用于获取 我的空间 的元信息
-`,
+该接口用于根据 folderToken 获取该文件夹的元信息`,
+				Request:     "GET https://open.feishu.cn/open-apis/drive/explorer/v2/folder/:folderToken/meta",
+				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uAjNzUjLwYzM14CM2MTN",
+				FuncName:    "Meta",
+				AccessToken: "user",
+				PathParams: []Param{
+					{Name: "", Type: "string"},
+				},
+			},
+			{
+				Name:        "获取root folder（我的空间） meta",
+				Description: `该接口用于获取 "我的空间" 的元信息`,
 				Request:     "GET https://open.feishu.cn/open-apis/drive/explorer/v2/root_folder/meta",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uAjNzUjLwYzM14CM2MTN",
 				FuncName:    "RootFolderMeta",
@@ -194,12 +270,22 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "GET https://open.feishu.cn/open-apis/drive/explorer/v2/folder/:folderToken/children",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uEjNzUjLxYzM14SM2MTN",
-				FuncName:    "FolderChildren",
+				FuncName:    "Children",
 				AccessToken: "user",
 				PathParams: []Param{
 					{Name: "", Type: "string"},
 				},
+				GetParams: []Param{
+					{Name: `types`, Type: `string`},
+				},
 			},
+		},
+	},
+	{
+		Name:    `云文档/file`,
+		Package: `capabilities/document/file`,
+		Apis: []Api{
+
 			{
 				Name: "新建文档",
 				Description: `
@@ -209,7 +295,7 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "POST https://open.feishu.cn/open-apis/drive/explorer/v2/file/:folderToken",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uQTNzUjL0UzM14CN1MTN",
-				FuncName:    "CreateFile",
+				FuncName:    "Create",
 				AccessToken: "user",
 				PathParams: []Param{
 					{Name: "", Type: "string"},
@@ -225,26 +311,30 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "POST https://open.feishu.cn/open-apis/drive/explorer/v2/file/copy/files/:fileToken",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uYTNzUjL2UzM14iN1MTN",
-				FuncName:    "CopyFile",
+				FuncName:    "Copy",
 				AccessToken: "user",
 				PathParams: []Param{
 					{Name: "", Type: "string"},
 				},
 			},
 			{
-				Name: "删除文档",
-				Description: `Doc 
-
-该接口用于根据 spreadsheetToken 删除对应的 sheet 文档。
-`,
-				Request:     "DELETE https://open.feishu.cn/open-apis/drive/explorer/v2/file/spreadsheets/:spreadsheetToken",
+				Name:        "删除 Doc",
+				Description: `该接口用于根据 docToken 删除对应的 Docs 文档。`,
+				Request:     "DELETE https://open.feishu.cn/open-apis/drive/explorer/v2/file/docs/:docToken",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uATM2UjLwEjN14CMxYTN",
-				FuncName:    "DeleteFile",
+				FuncName:    "DeleteDoc",
 				AccessToken: "user",
 				PathParams: []Param{
 					{Name: "", Type: "string"},
 				},
 			},
+		},
+	},
+	{
+		Name:    `云文档/permission`,
+		Package: `capabilities/document/permission`,
+		Apis: []Api{
+
 			{
 				Name: "增加权限",
 				Description: `
@@ -253,7 +343,7 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "POST https://open.feishu.cn/open-apis/drive/permission/member/create",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uMzNzUjLzczM14yM3MTN",
-				FuncName:    "PermissionMemberCreate",
+				FuncName:    "MemberCreate",
 				AccessToken: "user",
 			},
 			{
@@ -264,7 +354,7 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "POST https://open.feishu.cn/open-apis/drive/permission/member/transfer",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uQzNzUjL0czM14CN3MTN",
-				FuncName:    "PermissionMemberTransfer",
+				FuncName:    "MemberTransfer",
 				AccessToken: "user",
 			},
 			{
@@ -275,7 +365,7 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "POST https://open.feishu.cn/open-apis/drive/permission/public/update",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/ukTM3UjL5EzN14SOxcTN",
-				FuncName:    "PermissionPublicUpdate",
+				FuncName:    "PublicUpdate",
 				AccessToken: "user",
 			},
 			{
@@ -288,7 +378,7 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "POST https://open.feishu.cn/open-apis/drive/permission/member/list",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uATN3UjLwUzN14CM1cTN",
-				FuncName:    "PermissionMemberList",
+				FuncName:    "MemberList",
 				AccessToken: "user",
 			},
 			{
@@ -299,7 +389,7 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "POST https://open.feishu.cn/open-apis/drive/permission/member/delete",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uYTN3UjL2UzN14iN1cTN",
-				FuncName:    "PermissionMemberDelete",
+				FuncName:    "MemberDelete",
 				AccessToken: "user",
 			},
 			{
@@ -310,7 +400,7 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "POST https://open.feishu.cn/open-apis/drive/permission/member/update",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/ucTN3UjL3UzN14yN1cTN",
-				FuncName:    "PermissionMemberUpdate",
+				FuncName:    "MemberUpdate",
 				AccessToken: "user",
 			},
 			{
@@ -321,9 +411,16 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "POST https://open.feishu.cn/open-apis/drive/permission/member/permitted",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uYzN3UjL2czN14iN3cTN",
-				FuncName:    "PermissionMemberPermitted",
+				FuncName:    "MemberPermitted",
 				AccessToken: "user",
 			},
+		},
+	},
+	{
+		Name:    `云文档/docs`,
+		Package: `capabilities/document/docs`,
+		Apis: []Api{
+
 			{
 				Name: "获取文档文本内容",
 				Description: `
@@ -339,9 +436,7 @@ var apiConfig2 = []ApiGroup{
 			},
 			{
 				Name: "获取sheet@doc的元数据",
-				Description: `sheet@doc 的元数据
-
-该接口用于根据 docToken 获取 sheet@doc 的元数据。
+				Description: `该接口用于根据 docToken 获取 sheet@doc 的元数据。
 `,
 				Request:     "GET https://open.feishu.cn/open-apis/doc/v2/:docToken/sheet_meta",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uADOzUjLwgzM14CM4MTN",
@@ -364,6 +459,13 @@ var apiConfig2 = []ApiGroup{
 					{Name: "", Type: "string"},
 				},
 			},
+		},
+	},
+	{
+		Name:    `云文档/sheets`,
+		Package: `capabilities/document/sheets`,
+		Apis: []Api{
+
 			{
 				Name: "获取表格元数据",
 				Description: `
@@ -371,21 +473,33 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "GET https://open.feishu.cn/open-apis/sheet/v2/spreadsheets/:spreadsheetToken/metainfo",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uETMzUjLxEzM14SMxMTN",
-				FuncName:    "SpreadSheetsMetainfo",
+				FuncName:    "MetaInfo",
 				AccessToken: "user",
 				PathParams: []Param{
 					{Name: "", Type: "string"},
 				},
 			},
 			{
-				Name: "操作子表",
+				Name: "更新表格属性",
+				Description: `该接口用于根据 spreadsheetToken 更新表格属性，如更新表格标题。
+`,
+				Request:     "PUT https://open.feishu.cn/open-apis/sheet/v2/spreadsheets/:spreadsheetToken/properties",
+				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/ucTMzUjL3EzM14yNxMTN",
+				FuncName:    "UpdateProperties",
+				AccessToken: "user",
+				PathParams: []Param{
+					{Name: "", Type: "string"},
+				},
+			},
+			{
+				Name: "操作子表/更新子表属性",
 				Description: `
 
 该接口用于根据 spreadsheetToken 操作表格，如增加sheet，复制sheet、删除sheet。
 `,
 				Request:     "POST https://open.feishu.cn/open-apis/sheet/v2/spreadsheets/:spreadsheetToken/sheets_batch_update",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uYTMzUjL2EzM14iNxMTN",
-				FuncName:    "SheetsBatchUpdate",
+				FuncName:    "BatchUpdate",
 				AccessToken: "user",
 				PathParams: []Param{
 					{Name: "", Type: "string"},
@@ -399,7 +513,7 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "POST https://open.feishu.cn/open-apis/sheet/v2/spreadsheets/:spreadsheetToken/values_prepend",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uIjMzUjLyIzM14iMyMTN",
-				FuncName:    "SpreadSheetsValuesPrepend",
+				FuncName:    "ValuesPrepend",
 				AccessToken: "user",
 				PathParams: []Param{
 					{Name: "", Type: "string"},
@@ -413,7 +527,7 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "POST https://open.feishu.cn/open-apis/sheet/v2/spreadsheets/:spreadsheetToken/values_append",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uMjMzUjLzIzM14yMyMTN",
-				FuncName:    "SpreadSheetsValuesAppend",
+				FuncName:    "ValuesAppend",
 				AccessToken: "user",
 				PathParams: []Param{
 					{Name: "", Type: "string"},
@@ -427,7 +541,7 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "POST https://open.feishu.cn/open-apis/sheet/v2/spreadsheets/:spreadsheetToken/insert_dimension_range",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uQjMzUjL0IzM14CNyMTN",
-				FuncName:    "SpreadSheetsInsertDimensionRange",
+				FuncName:    "InsertDimensionRange",
 				AccessToken: "user",
 				PathParams: []Param{
 					{Name: "", Type: "string"},
@@ -441,7 +555,53 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "POST https://open.feishu.cn/open-apis/sheet/v2/spreadsheets/:spreadsheetToken/dimension_range",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uUjMzUjL1IzM14SNyMTN",
-				FuncName:    "SpreadSheetsDimensionRange",
+				FuncName:    "CreateDimensionRange",
+				AccessToken: "user",
+				PathParams: []Param{
+					{Name: "", Type: "string"},
+				},
+			},
+			{
+				Name: "更新行列",
+				Description: `该接口用于根据 spreadsheetToken 和维度信息更新隐藏行列、单元格大小；单次操作不超过5000行或列。
+`,
+				Request:     "PUT https://open.feishu.cn/open-apis/sheet/v2/spreadsheets/:spreadsheetToken/dimension_range",
+				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uYjMzUjL2IzM14iNyMTN",
+				FuncName:    "UpdateDimensionRange",
+				AccessToken: "user",
+				PathParams: []Param{
+					{Name: "", Type: "string"},
+				},
+			},
+			{
+				Name: "删除行列",
+				Description: `该接口用于根据 spreadsheetToken 和维度信息删除行/列 。单次删除最大5000行/列。
+`,
+				Request:     "DELETE https://open.feishu.cn/open-apis/sheet/v2/spreadsheets/:spreadsheetToken/dimension_range",
+				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/ucjMzUjL3IzM14yNyMTN",
+				FuncName:    "DeleteDimensionRange",
+				AccessToken: "user",
+				PathParams: []Param{
+					{Name: "", Type: "string"},
+				},
+			},
+			{
+				Name:        "设置单元格样式",
+				Description: `该接口用于根据 spreadsheetToken 、range 和样式信息更新单元格样式；单次写入不超过5000行，100列。`,
+				Request:     "PUT https://open.feishu.cn/open-apis/sheet/v2/spreadsheets/:spreadsheetToken/style",
+				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/ukjMzUjL5IzM14SOyMTN",
+				FuncName:    "UpdateStyle",
+				AccessToken: "user",
+				PathParams: []Param{
+					{Name: "", Type: "string"},
+				},
+			},
+			{
+				Name:        "批量设置单元格样式",
+				Description: `该接口用于根据 spreadsheetToken 、range和样式信息 批量更新单元格样式；单次写入不超过5000行，100列。`,
+				Request:     "PUT https://open.feishu.cn/open-apis/sheet/v2/spreadsheets/:spreadsheetToken/styles_batch_update",
+				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uAzMzUjLwMzM14CMzMTN",
+				FuncName:    "BatchUpdateStyle",
 				AccessToken: "user",
 				PathParams: []Param{
 					{Name: "", Type: "string"},
@@ -455,7 +615,7 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "POST https://open.feishu.cn/open-apis/sheet/v2/spreadsheets/:spreadsheetToken/protected_dimension",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/ugDNzUjL4QzM14CO0MTN",
-				FuncName:    "SpreadSheetsProtectedDimension",
+				FuncName:    "ProtectedDimension",
 				AccessToken: "user",
 				PathParams: []Param{
 					{Name: "", Type: "string"},
@@ -469,7 +629,7 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "POST https://open.feishu.cn/open-apis/sheet/v2/spreadsheets/:spreadsheetToken/merge_cells",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/ukDNzUjL5QzM14SO0MTN",
-				FuncName:    "SpreadSheetsMergeCells",
+				FuncName:    "MergeCells",
 				AccessToken: "user",
 				PathParams: []Param{
 					{Name: "", Type: "string"},
@@ -483,7 +643,7 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "POST https://open.feishu.cn/open-apis/sheet/v2/spreadsheets/:spreadsheetToken/unmerge_cells",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uATNzUjLwUzM14CM1MTN",
-				FuncName:    "SpreadSheetsUnmergeCells",
+				FuncName:    "UnmergeCells",
 				AccessToken: "user",
 				PathParams: []Param{
 					{Name: "", Type: "string"},
@@ -497,7 +657,19 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "GET https://open.feishu.cn/open-apis/sheet/v2/spreadsheets/:spreadsheetToken/values/:range",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/ugTMzUjL4EzM14COxMTN",
-				FuncName:    "SpreadSheetsRange",
+				FuncName:    "Range",
+				AccessToken: "user",
+				PathParams: []Param{
+					{Name: "", Type: "string"},
+				},
+			},
+			{
+				Name: "向单个范围写入数据",
+				Description: `该接口用于根据 spreadsheetToken 和 range 向单个范围写入数据，若范围内有数据，将被更新覆盖；单次写入不超过5000行，100列，每个格子大小为0.5M。
+`,
+				Request:     "PUT https://open.feishu.cn/open-apis/sheet/v2/spreadsheets/:spreadsheetToken/values",
+				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uAjMzUjLwIzM14CMyMTN",
+				FuncName:    "Values",
 				AccessToken: "user",
 				PathParams: []Param{
 					{Name: "", Type: "string"},
@@ -511,10 +683,13 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "GET https://open.feishu.cn/open-apis/sheet/v2/spreadsheets/:spreadsheetToken/values_batch_get",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/ukTMzUjL5EzM14SOxMTN",
-				FuncName:    "SpreadSheetsValuesBatchGet",
+				FuncName:    "ValuesBatchGet",
 				AccessToken: "user",
 				PathParams: []Param{
 					{Name: "", Type: "string"},
+				},
+				GetParams: []Param{
+					{Name: "ranges", Type: "string"},
 				},
 			},
 			{
@@ -525,12 +700,19 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "POST https://open.feishu.cn/open-apis/sheet/v2/spreadsheets/:spreadsheetToken/values_batch_update",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uEjMzUjLxIzM14SMyMTN",
-				FuncName:    "SpreadSheetsValuesBatchUpdate",
+				FuncName:    "ValuesBatchUpdate",
 				AccessToken: "user",
 				PathParams: []Param{
 					{Name: "", Type: "string"},
 				},
 			},
+		},
+	},
+	{
+		Name:    `云文档/platform`,
+		Package: `capabilities/document/platform`,
+		Apis: []Api{
+
 			{
 				Name: "获取元数据",
 				Description: `
@@ -553,6 +735,13 @@ var apiConfig2 = []ApiGroup{
 				FuncName:    "SearchObject",
 				AccessToken: "user",
 			},
+		},
+	},
+	{
+		Name:    `云文档/评论`,
+		Package: `capabilities/document/comment`,
+		Apis: []Api{
+
 			{
 				Name: "添加全文评论",
 				Description: `
@@ -561,14 +750,14 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:     "POST https://open.feishu.cn/open-apis/comment/add_whole",
 				See:         "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/ucDN4UjL3QDO14yN0gTN",
-				FuncName:    "CommentAddWhole",
+				FuncName:    "AddWhole",
 				AccessToken: "user",
 			},
 		},
 	},
 	{
 		Name:    `审批`,
-		Package: `capabilities/approve`,
+		Package: `capabilities/approval`,
 		Apis: []Api{
 
 			{
@@ -669,18 +858,39 @@ var apiConfig2 = []ApiGroup{
 				FuncName: "Upload",
 			},
 			{
-				Name: "三方审批实例同步",
-				Description: `
-用于第三方审批的实例同步。
-使用前需确保已经在审批后台创建第三方审批。
+				Name: "三方审批定义创建/同步",
+				Description: `企业通过第三方审批定义创建接口，帮助企业创建审批定义，创建审批定义后，可以将该审批定义下的审批实例推送到飞书审批应用。
+`,
+				Request:  "POST https://www.feishu.cn/approval/openapi/v3/external/approval/create",
+				See:      "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uIDNyYjLyQjM24iM0IjN",
+				FuncName: "ExternalInstanceCreate",
+			},
+			{
+				Name: "三方审批实例校验",
+				Description: `校验三方审批实例数据，用于判断服务端数据是否为最新的。用户提交实例最新更新时间，如果服务端不存在该实例，或者服务端实例更新时间不是最新的，则返回对应实例 id。
 
-> 审批实例：员工发起审批时产生的对象，详情参见 [开发指南](/ssl:ttdoc/ugTM5UjL4ETO14COxkTN/ukDNyUjL5QjM14SO0ITN)
-> 
+例如，用户可以每隔5分钟，将最近5分钟产生的实例使用该接口进行对比。
 **权限说明** ：需要获取 访问审批应用 权限。
 `,
-				Request:  "POST https://www.feishu.cn/approval/openapi/v2/external/instance/create",
-				See:      "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uczM3UjL3MzN14yNzcTN",
-				FuncName: "ExternalInstanceCreate",
+				Request:  "POST https://www.feishu.cn/approval/openapi/v3/external/instance/check",
+				See:      "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uUDNyYjL1QjM24SN0IjN",
+				FuncName: "ExternalInstanceCheck",
+			},
+			{
+				Name: "发送审批Bot消息",
+				Description: `此接口可以用来通过飞书审批的Bot推送消息给用户，当有新的审批待办，或者审批待办的状态有更新时，可以通过飞书审批的Bot告知用户。当然开发者也可以利用开放平台的能力自建一个全新的Bot，用来推送审批相关信息。
+`,
+				Request:  "POST https://www.feishu.cn/approval/openapi/v1/message/send",
+				See:      "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/ugDNyYjL4QjM24CO0IjN",
+				FuncName: "MessageSend",
+			},
+			{
+				Name: "更新审批Bot消息",
+				Description: `此接口可以根据审批bot消息id及相应状态，更新相应的审批bot消息。例如，给用户推送了审批待办消息，当用户处理该消息后，可以将之前推送的Bot消息更新为已审批。
+`,
+				Request:  "POST https://www.feishu.cn/approval/openapi/v1/message/update",
+				See:      "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uAjNyYjLwYjM24CM2IjN",
+				FuncName: "MessageUpdate",
 			},
 			{
 				Name: "创建审批定义",
@@ -691,7 +901,7 @@ var apiConfig2 = []ApiGroup{
 `,
 				Request:  "POST https://www.feishu.cn/approval/openapi/v2/approval/create",
 				See:      "https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uUzNyYjL1cjM24SN3IjN",
-				FuncName: "Create",
+				FuncName: "ApprovalCreate",
 			},
 			{
 				Name: "审批实例抄送",
@@ -726,7 +936,7 @@ var apiConfig2 = []ApiGroup{
 	},
 	{
 		Name:    `会议室`,
-		Package: `capabilities/meeting`,
+		Package: `capabilities/meeting_room`,
 		Apis: []Api{
 
 			{

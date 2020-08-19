@@ -12,22 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package meeting_test
+package meeting_room_test
 
 import (
 	"fmt"
 	"net/url"
 
 	"github.com/fastwego/feishu"
-	"github.com/fastwego/feishu/apis/capabilities/meeting"
+	"github.com/fastwego/feishu/apis/capabilities/meeting_room"
 )
 
 func ExampleBuildingList() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
-	resp, err := meeting.BuildingList(ctx, params)
+	resp, err := meeting_room.BuildingList(ctx, params)
 
 	fmt.Println(resp, err)
 }
@@ -36,8 +35,7 @@ func ExampleBuildingBatchGet() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
-	resp, err := meeting.BuildingBatchGet(ctx, params)
+	resp, err := meeting_room.BuildingBatchGet(ctx, params)
 
 	fmt.Println(resp, err)
 }
@@ -46,8 +44,7 @@ func ExampleMeetingRoomList() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
-	resp, err := meeting.MeetingRoomList(ctx, params)
+	resp, err := meeting_room.MeetingRoomList(ctx, params)
 
 	fmt.Println(resp, err)
 }
@@ -56,8 +53,7 @@ func ExampleMeetingRoomBatchGet() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
-	resp, err := meeting.MeetingRoomBatchGet(ctx, params)
+	resp, err := meeting_room.MeetingRoomBatchGet(ctx, params)
 
 	fmt.Println(resp, err)
 }
@@ -66,8 +62,7 @@ func ExampleMeetingRoomFreeBusyBatchGet() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
-	resp, err := meeting.MeetingRoomFreeBusyBatchGet(ctx, params)
+	resp, err := meeting_room.MeetingRoomFreeBusyBatchGet(ctx, params)
 
 	fmt.Println(resp, err)
 }
@@ -76,8 +71,7 @@ func ExampleInstanceReply() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
-	resp, err := meeting.InstanceReply(ctx, payload)
+	resp, err := meeting_room.InstanceReply(ctx, payload)
 
 	fmt.Println(resp, err)
 }
@@ -86,8 +80,7 @@ func ExampleBuildingCreate() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
-	resp, err := meeting.BuildingCreate(ctx, payload)
+	resp, err := meeting_room.BuildingCreate(ctx, payload)
 
 	fmt.Println(resp, err)
 }
@@ -96,8 +89,7 @@ func ExampleBuildingUpdate() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
-	resp, err := meeting.BuildingUpdate(ctx, payload)
+	resp, err := meeting_room.BuildingUpdate(ctx, payload)
 
 	fmt.Println(resp, err)
 }
@@ -106,8 +98,7 @@ func ExampleBuildingDelete() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
-	resp, err := meeting.BuildingDelete(ctx, payload)
+	resp, err := meeting_room.BuildingDelete(ctx, payload)
 
 	fmt.Println(resp, err)
 }
@@ -116,8 +107,7 @@ func ExampleBuildingBatchGetById() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
-	resp, err := meeting.BuildingBatchGetById(ctx, params)
+	resp, err := meeting_room.BuildingBatchGetById(ctx, params)
 
 	fmt.Println(resp, err)
 }
@@ -126,8 +116,7 @@ func ExampleMeetingRoomCreate() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
-	resp, err := meeting.MeetingRoomCreate(ctx, payload)
+	resp, err := meeting_room.MeetingRoomCreate(ctx, payload)
 
 	fmt.Println(resp, err)
 }
@@ -136,8 +125,7 @@ func ExampleMeetingRoomUpdate() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
-	resp, err := meeting.MeetingRoomUpdate(ctx, payload)
+	resp, err := meeting_room.MeetingRoomUpdate(ctx, payload)
 
 	fmt.Println(resp, err)
 }
@@ -146,8 +134,7 @@ func ExampleMeetingRoomDelete() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
-	resp, err := meeting.MeetingRoomDelete(ctx, payload)
+	resp, err := meeting_room.MeetingRoomDelete(ctx, payload)
 
 	fmt.Println(resp, err)
 }
@@ -156,8 +143,7 @@ func ExampleMeetingRoomBatchGetById() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
-	resp, err := meeting.MeetingRoomBatchGetById(ctx, params)
+	resp, err := meeting_room.MeetingRoomBatchGetById(ctx, params)
 
 	fmt.Println(resp, err)
 }
@@ -165,7 +151,7 @@ func ExampleMeetingRoomBatchGetById() {
 func ExampleCountryList() {
 	var ctx *feishu.App
 
-	resp, err := meeting.CountryList(ctx)
+	resp, err := meeting_room.CountryList(ctx)
 
 	fmt.Println(resp, err)
 }
@@ -174,8 +160,7 @@ func ExampleDistrictList() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
-	resp, err := meeting.DistrictList(ctx, params)
+	resp, err := meeting_room.DistrictList(ctx, params)
 
 	fmt.Println(resp, err)
 }

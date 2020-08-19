@@ -16,7 +16,6 @@ package user_test
 
 import (
 	"fmt"
-	"net/http"
 	"net/url"
 
 	"github.com/fastwego/feishu"
@@ -27,7 +26,6 @@ func ExampleBatchGet() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
 	resp, err := user.BatchGet(ctx, params)
 
 	fmt.Println(resp, err)
@@ -37,7 +35,6 @@ func ExampleDepartmentUserList() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
 	resp, err := user.DepartmentUserList(ctx, params)
 
 	fmt.Println(resp, err)
@@ -47,7 +44,6 @@ func ExampleDepartmentUserDetailList() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
 	resp, err := user.DepartmentUserDetailList(ctx, params)
 
 	fmt.Println(resp, err)
@@ -57,7 +53,6 @@ func ExampleAdd() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
 	resp, err := user.Add(ctx, payload)
 
 	fmt.Println(resp, err)
@@ -67,7 +62,6 @@ func ExampleDelete() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
 	resp, err := user.Delete(ctx, payload)
 
 	fmt.Println(resp, err)
@@ -77,7 +71,6 @@ func ExampleUpdate() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
 	resp, err := user.Update(ctx, payload)
 
 	fmt.Println(resp, err)
@@ -95,7 +88,6 @@ func ExampleRoleMembers() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
 	resp, err := user.RoleMembers(ctx, params)
 
 	fmt.Println(resp, err)
@@ -105,7 +97,6 @@ func ExampleBatchGetId() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
 	resp, err := user.BatchGetId(ctx, params)
 
 	fmt.Println(resp, err)
@@ -115,7 +106,6 @@ func ExampleUnionIdBatchGetList() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
 	resp, err := user.UnionIdBatchGetList(ctx, params)
 
 	fmt.Println(resp, err)
@@ -125,8 +115,8 @@ func ExampleSearch() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-	header := http.Header{}
-	resp, err := user.Search(ctx, params, header)
+	accessToken := ""
+	resp, err := user.Search(ctx, params, accessToken)
 
 	fmt.Println(resp, err)
 }

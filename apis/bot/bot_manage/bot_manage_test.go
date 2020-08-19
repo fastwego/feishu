@@ -34,9 +34,9 @@ func TestInfo(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiInfo, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiInfo, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
@@ -69,9 +69,9 @@ func TestAdd(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiAdd, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiAdd, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -105,9 +105,9 @@ func TestRemove(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiRemove, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiRemove, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App

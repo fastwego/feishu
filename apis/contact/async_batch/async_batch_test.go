@@ -35,9 +35,9 @@ func TestDepartmentBatchAdd(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiDepartmentBatchAdd, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiDepartmentBatchAdd, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -71,9 +71,9 @@ func TestUserBatchAdd(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiUserBatchAdd, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiUserBatchAdd, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -107,9 +107,9 @@ func TestTaskGet(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiTaskGet, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiTaskGet, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App

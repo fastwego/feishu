@@ -33,7 +33,6 @@ func ExampleAdd() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
 	resp, err := bot_manage.Add(ctx, payload)
 
 	fmt.Println(resp, err)
@@ -43,7 +42,6 @@ func ExampleRemove() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
 	resp, err := bot_manage.Remove(ctx, payload)
 
 	fmt.Println(resp, err)

@@ -51,9 +51,9 @@ func DepartmentBatchAdd(ctx *feishu.App, payload []byte) (resp []byte, err error
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiDepartmentBatchAdd, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiDepartmentBatchAdd, bytes.NewReader(payload), header)
 }
 
 /*
@@ -78,9 +78,9 @@ func UserBatchAdd(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiUserBatchAdd, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiUserBatchAdd, bytes.NewReader(payload), header)
 }
 
 /*
@@ -104,7 +104,7 @@ func TaskGet(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiTaskGet+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiTaskGet+"?"+params.Encode(), header)
 }

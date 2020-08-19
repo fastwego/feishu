@@ -34,9 +34,9 @@ func TestTenantCustomAttrGet(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiTenantCustomAttrGet, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiTenantCustomAttrGet, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App

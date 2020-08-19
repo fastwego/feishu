@@ -35,9 +35,9 @@ func TestChatCreate(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiChatCreate, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiChatCreate, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -71,12 +71,14 @@ func TestChatList(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiChatList, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiChatList, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
+
+		params url.Values
 	}
 	tests := []struct {
 		name     string
@@ -89,7 +91,7 @@ func TestChatList(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := ChatList(tt.args.ctx)
+			gotResp, err := ChatList(tt.args.ctx, tt.args.params)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ChatList() error = %v, wantErr %v", err, tt.wantErr)
@@ -106,9 +108,9 @@ func TestChatInfo(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiChatInfo, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiChatInfo, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
@@ -143,9 +145,9 @@ func TestChatUpdate(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiChatUpdate, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiChatUpdate, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -179,9 +181,9 @@ func TestChatterAdd(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiChatterAdd, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiChatterAdd, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -215,9 +217,9 @@ func TestChatterDelete(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiChatterDelete, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiChatterDelete, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -251,9 +253,9 @@ func TestDisband(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiDisband, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiDisband, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App

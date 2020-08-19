@@ -20,12 +20,14 @@ import (
 	"net/http/httptest"
 	"sync"
 
+	"github.com/gorilla/mux"
+
 	"github.com/fastwego/feishu"
 )
 
 var MockApp *feishu.App
+var MockRouter *mux.Router
 var MockSvr *httptest.Server
-var MockSvrHandler *http.ServeMux
 var onceSetup sync.Once
 
 // 初始化测试环境
@@ -40,16 +42,17 @@ func Setup() {
 		})
 
 		// Mock Server
-		MockSvrHandler = http.NewServeMux()
-		MockSvr = httptest.NewServer(MockSvrHandler)
+		MockRouter = mux.NewRouter()
+		MockSvr = httptest.NewServer(MockRouter)
 		feishu.FeishuServerUrl = MockSvr.URL // 拦截发往服务器的请求
+		feishu.FeishuServerUrl2 = MockSvr.URL
 
 		// Mock access token
-		MockSvrHandler.HandleFunc("/open-apis/auth/v3/tenant_access_token/internal/", func(w http.ResponseWriter, r *http.Request) {
+		MockRouter.HandleFunc("/open-apis/auth/v3/tenant_access_token/internal/", func(w http.ResponseWriter, r *http.Request) {
 			_, _ = w.Write([]byte(`{"tenant_access_token":"ACCESS_TOKEN","expire":7200}`))
-		})
-		MockSvrHandler.HandleFunc("/open-apis/auth/v3/app_access_token/internal/", func(w http.ResponseWriter, r *http.Request) {
+		}).Methods("POST")
+		MockRouter.HandleFunc("/open-apis/auth/v3/app_access_token/internal/", func(w http.ResponseWriter, r *http.Request) {
 			_, _ = w.Write([]byte(`{"app_access_token":"ACCESS_TOKEN","expire":7200}`))
-		})
+		}).Methods("POST")
 	})
 }

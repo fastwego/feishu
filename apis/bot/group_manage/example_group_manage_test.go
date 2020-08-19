@@ -26,7 +26,6 @@ func ExampleChatCreate() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
 	resp, err := group_manage.ChatCreate(ctx, payload)
 
 	fmt.Println(resp, err)
@@ -35,7 +34,8 @@ func ExampleChatCreate() {
 func ExampleChatList() {
 	var ctx *feishu.App
 
-	resp, err := group_manage.ChatList(ctx)
+	params := url.Values{}
+	resp, err := group_manage.ChatList(ctx, params)
 
 	fmt.Println(resp, err)
 }
@@ -44,7 +44,6 @@ func ExampleChatInfo() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
 	resp, err := group_manage.ChatInfo(ctx, params)
 
 	fmt.Println(resp, err)
@@ -54,7 +53,6 @@ func ExampleChatUpdate() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
 	resp, err := group_manage.ChatUpdate(ctx, payload)
 
 	fmt.Println(resp, err)
@@ -64,7 +62,6 @@ func ExampleChatterAdd() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
 	resp, err := group_manage.ChatterAdd(ctx, payload)
 
 	fmt.Println(resp, err)
@@ -74,7 +71,6 @@ func ExampleChatterDelete() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
 	resp, err := group_manage.ChatterDelete(ctx, payload)
 
 	fmt.Println(resp, err)
@@ -84,7 +80,6 @@ func ExampleDisband() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
 	resp, err := group_manage.Disband(ctx, payload)
 
 	fmt.Println(resp, err)

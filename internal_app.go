@@ -42,7 +42,6 @@ var getInternalTenantAccessTokenLock sync.Mutex
 
 如果没有 access_token 或者 已过期，那么刷新
 
-获得新的 access_token 后 过期时间设置为 0.9 * expiresIn 提供一定冗余
 */
 func (app *App) GetTenantAccessToken() (accessToken string, err error) {
 
@@ -67,9 +66,9 @@ func (app *App) GetTenantAccessToken() (accessToken string, err error) {
 		return
 	}
 
-	// 提前过期 提供冗余时间
-	expiresIn = int(0.9 * float64(expiresIn))
-	d := time.Duration(expiresIn) * time.Second
+	// 提前 5min 过期 提供冗余时间
+	//Token 有效期为 2 小时，在此期间调用该接口 token 不会改变。当 token 有效期小于 10 分的时候，再次请求获取 token 的时候，会生成一个新的 token，与此同时老的 token 依然有效。
+	d := time.Duration(expiresIn-300) * time.Second
 	_ = app.Cache.Save(cacheKey, accessToken, d)
 
 	if app.Logger != nil {
@@ -144,8 +143,6 @@ var getAppAccessTokenLock sync.Mutex
 从 应用 实例 的 AppAccessToken 管理器 获取 access_token
 
 如果没有 access_token 或者 已过期，那么刷新
-
-获得新的 access_token 后 过期时间设置为 0.9 * expiresIn 提供一定冗余
 */
 func (app *App) GetAppAccessToken() (accessToken string, err error) {
 	cacheKey := "app_access_token:" + app.Config.AppId
@@ -168,8 +165,7 @@ func (app *App) GetAppAccessToken() (accessToken string, err error) {
 	}
 
 	// 提前过期 提供冗余时间
-	expiresIn = int(0.9 * float64(expiresIn))
-	d := time.Duration(expiresIn) * time.Second
+	d := time.Duration(expiresIn-300) * time.Second
 	_ = app.Cache.Save(cacheKey, accessToken, d)
 
 	if app.Logger != nil {

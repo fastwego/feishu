@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package meeting 会议室
-package meeting
+// Package meeting_room 会议室
+package meeting_room
 
 import (
 	"bytes"
@@ -63,9 +63,9 @@ func BuildingList(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiBuildingList+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiBuildingList+"?"+params.Encode(), header)
 }
 
 /*
@@ -89,9 +89,9 @@ func BuildingBatchGet(ctx *feishu.App, params url.Values) (resp []byte, err erro
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiBuildingBatchGet+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiBuildingBatchGet+"?"+params.Encode(), header)
 }
 
 /*
@@ -115,9 +115,9 @@ func MeetingRoomList(ctx *feishu.App, params url.Values) (resp []byte, err error
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiMeetingRoomList+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiMeetingRoomList+"?"+params.Encode(), header)
 }
 
 /*
@@ -141,9 +141,9 @@ func MeetingRoomBatchGet(ctx *feishu.App, params url.Values) (resp []byte, err e
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiMeetingRoomBatchGet+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiMeetingRoomBatchGet+"?"+params.Encode(), header)
 }
 
 /*
@@ -167,9 +167,9 @@ func MeetingRoomFreeBusyBatchGet(ctx *feishu.App, params url.Values) (resp []byt
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiMeetingRoomFreeBusyBatchGet+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiMeetingRoomFreeBusyBatchGet+"?"+params.Encode(), header)
 }
 
 /*
@@ -193,9 +193,9 @@ func InstanceReply(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiInstanceReply, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiInstanceReply, bytes.NewReader(payload), header)
 }
 
 /*
@@ -219,9 +219,9 @@ func BuildingCreate(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiBuildingCreate, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiBuildingCreate, bytes.NewReader(payload), header)
 }
 
 /*
@@ -245,9 +245,9 @@ func BuildingUpdate(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiBuildingUpdate, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiBuildingUpdate, bytes.NewReader(payload), header)
 }
 
 /*
@@ -271,9 +271,9 @@ func BuildingDelete(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiBuildingDelete, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiBuildingDelete, bytes.NewReader(payload), header)
 }
 
 /*
@@ -297,9 +297,9 @@ func BuildingBatchGetById(ctx *feishu.App, params url.Values) (resp []byte, err 
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiBuildingBatchGetById+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiBuildingBatchGetById+"?"+params.Encode(), header)
 }
 
 /*
@@ -323,9 +323,9 @@ func MeetingRoomCreate(ctx *feishu.App, payload []byte) (resp []byte, err error)
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiMeetingRoomCreate, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiMeetingRoomCreate, bytes.NewReader(payload), header)
 }
 
 /*
@@ -349,9 +349,9 @@ func MeetingRoomUpdate(ctx *feishu.App, payload []byte) (resp []byte, err error)
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiMeetingRoomUpdate, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiMeetingRoomUpdate, bytes.NewReader(payload), header)
 }
 
 /*
@@ -375,9 +375,9 @@ func MeetingRoomDelete(ctx *feishu.App, payload []byte) (resp []byte, err error)
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiMeetingRoomDelete, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiMeetingRoomDelete, bytes.NewReader(payload), header)
 }
 
 /*
@@ -401,9 +401,9 @@ func MeetingRoomBatchGetById(ctx *feishu.App, params url.Values) (resp []byte, e
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiMeetingRoomBatchGetById+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiMeetingRoomBatchGetById+"?"+params.Encode(), header)
 }
 
 /*
@@ -427,9 +427,9 @@ func CountryList(ctx *feishu.App) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiCountryList, header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiCountryList, header)
 }
 
 /*
@@ -453,7 +453,7 @@ func DistrictList(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiDistrictList+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiDistrictList+"?"+params.Encode(), header)
 }

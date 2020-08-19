@@ -35,9 +35,9 @@ func TestGetCalendarById(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiGetCalendarById, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiGetCalendarById, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
@@ -72,12 +72,14 @@ func TestCalendarList(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiCalendarList, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiCalendarList, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
+
+		params url.Values
 	}
 	tests := []struct {
 		name     string
@@ -90,7 +92,7 @@ func TestCalendarList(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := CalendarList(tt.args.ctx)
+			gotResp, err := CalendarList(tt.args.ctx, tt.args.params)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CalendarList() error = %v, wantErr %v", err, tt.wantErr)
@@ -107,9 +109,9 @@ func TestCreateCalendars(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiCreateCalendars, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiCreateCalendars, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -143,9 +145,9 @@ func TestDeleteCalendarById(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiDeleteCalendarById, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiDeleteCalendarById, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("DELETE")
 
 	type args struct {
 		ctx *feishu.App
@@ -175,14 +177,52 @@ func TestDeleteCalendarById(t *testing.T) {
 		})
 	}
 }
+func TestUpdateCalendarById(t *testing.T) {
+	mockResp := map[string][]byte{
+		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
+	}
+	var resp []byte
+	test.MockRouter.HandleFunc(apiUpdateCalendarById, func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(resp))
+	}).Methods("PATCH")
+
+	type args struct {
+		ctx     *feishu.App
+		payload []byte
+
+		params url.Values
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantResp []byte
+		wantErr  bool
+	}{
+		{name: "case1", args: args{ctx: test.MockApp}, wantResp: mockResp["case1"], wantErr: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			resp = mockResp[tt.name]
+			gotResp, err := UpdateCalendarById(tt.args.ctx, tt.args.payload, tt.args.params)
+			//fmt.Println(string(gotResp), err)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UpdateCalendarById() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotResp, tt.wantResp) {
+				t.Errorf("UpdateCalendarById() gotResp = %v, want %v", gotResp, tt.wantResp)
+			}
+		})
+	}
+}
 func TestGetEventById(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiGetEventById, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiGetEventById, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
@@ -217,9 +257,9 @@ func TestCreateEvent(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiCreateEvent, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiCreateEvent, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -250,14 +290,126 @@ func TestCreateEvent(t *testing.T) {
 		})
 	}
 }
+func TestGetEvents(t *testing.T) {
+	mockResp := map[string][]byte{
+		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
+	}
+	var resp []byte
+	test.MockRouter.HandleFunc(apiGetEvents, func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(resp))
+	}).Methods("GET")
+
+	type args struct {
+		ctx *feishu.App
+
+		params url.Values
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantResp []byte
+		wantErr  bool
+	}{
+		{name: "case1", args: args{ctx: test.MockApp}, wantResp: mockResp["case1"], wantErr: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			resp = mockResp[tt.name]
+			gotResp, err := GetEvents(tt.args.ctx, tt.args.params)
+			//fmt.Println(string(gotResp), err)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("GetEvents() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotResp, tt.wantResp) {
+				t.Errorf("GetEvents() gotResp = %v, want %v", gotResp, tt.wantResp)
+			}
+		})
+	}
+}
+func TestDeleteEventById(t *testing.T) {
+	mockResp := map[string][]byte{
+		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
+	}
+	var resp []byte
+	test.MockRouter.HandleFunc(apiDeleteEventById, func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(resp))
+	}).Methods("DELETE")
+
+	type args struct {
+		ctx *feishu.App
+
+		params url.Values
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantResp []byte
+		wantErr  bool
+	}{
+		{name: "case1", args: args{ctx: test.MockApp}, wantResp: mockResp["case1"], wantErr: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			resp = mockResp[tt.name]
+			gotResp, err := DeleteEventById(tt.args.ctx, tt.args.params)
+			//fmt.Println(string(gotResp), err)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("DeleteEventById() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotResp, tt.wantResp) {
+				t.Errorf("DeleteEventById() gotResp = %v, want %v", gotResp, tt.wantResp)
+			}
+		})
+	}
+}
+func TestUpdateEventById(t *testing.T) {
+	mockResp := map[string][]byte{
+		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
+	}
+	var resp []byte
+	test.MockRouter.HandleFunc(apiUpdateEventById, func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(resp))
+	}).Methods("PATCH")
+
+	type args struct {
+		ctx     *feishu.App
+		payload []byte
+
+		params url.Values
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantResp []byte
+		wantErr  bool
+	}{
+		{name: "case1", args: args{ctx: test.MockApp}, wantResp: mockResp["case1"], wantErr: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			resp = mockResp[tt.name]
+			gotResp, err := UpdateEventById(tt.args.ctx, tt.args.payload, tt.args.params)
+			//fmt.Println(string(gotResp), err)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UpdateEventById() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotResp, tt.wantResp) {
+				t.Errorf("UpdateEventById() gotResp = %v, want %v", gotResp, tt.wantResp)
+			}
+		})
+	}
+}
 func TestAttendees(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiAttendees, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiAttendees, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -288,14 +440,14 @@ func TestAttendees(t *testing.T) {
 		})
 	}
 }
-func TestAcl(t *testing.T) {
+func TestGetAcl(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiAcl, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiGetAcl, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
@@ -313,26 +465,64 @@ func TestAcl(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := Acl(tt.args.ctx, tt.args.params)
+			gotResp, err := GetAcl(tt.args.ctx, tt.args.params)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Acl() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("GetAcl() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("Acl() gotResp = %v, want %v", gotResp, tt.wantResp)
+				t.Errorf("GetAcl() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}
 }
-func TestDeleteAclByRuleId(t *testing.T) {
+func TestCreateAcl(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiDeleteAclByRuleId, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiCreateAcl, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
+
+	type args struct {
+		ctx     *feishu.App
+		payload []byte
+
+		params url.Values
+	}
+	tests := []struct {
+		name     string
+		args     args
+		wantResp []byte
+		wantErr  bool
+	}{
+		{name: "case1", args: args{ctx: test.MockApp}, wantResp: mockResp["case1"], wantErr: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			resp = mockResp[tt.name]
+			gotResp, err := CreateAcl(tt.args.ctx, tt.args.payload, tt.args.params)
+			//fmt.Println(string(gotResp), err)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("CreateAcl() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(gotResp, tt.wantResp) {
+				t.Errorf("CreateAcl() gotResp = %v, want %v", gotResp, tt.wantResp)
+			}
+		})
+	}
+}
+func TestDeleteAcl(t *testing.T) {
+	mockResp := map[string][]byte{
+		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
+	}
+	var resp []byte
+	test.MockRouter.HandleFunc(apiDeleteAcl, func(w http.ResponseWriter, r *http.Request) {
+		w.Write([]byte(resp))
+	}).Methods("DELETE")
 
 	type args struct {
 		ctx *feishu.App
@@ -350,14 +540,14 @@ func TestDeleteAclByRuleId(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := DeleteAclByRuleId(tt.args.ctx, tt.args.params)
+			gotResp, err := DeleteAcl(tt.args.ctx, tt.args.params)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("DeleteAclByRuleId() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("DeleteAcl() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("DeleteAclByRuleId() gotResp = %v, want %v", gotResp, tt.wantResp)
+				t.Errorf("DeleteAcl() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}
@@ -367,9 +557,9 @@ func TestFreeBusyQuery(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiFreeBusyQuery, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiFreeBusyQuery, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -403,9 +593,9 @@ func TestSharedCalendarQuery(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiSharedCalendarQuery, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiSharedCalendarQuery, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
@@ -440,9 +630,9 @@ func TestSharedCalendarEvents(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiSharedCalendarEvents, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiSharedCalendarEvents, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App

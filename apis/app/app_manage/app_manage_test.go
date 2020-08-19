@@ -35,12 +35,14 @@ func TestIsUserAdmin(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiIsUserAdmin, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiIsUserAdmin, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
+
+		params url.Values
 	}
 	tests := []struct {
 		name     string
@@ -53,7 +55,7 @@ func TestIsUserAdmin(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := IsUserAdmin(tt.args.ctx)
+			gotResp, err := IsUserAdmin(tt.args.ctx, tt.args.params)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("IsUserAdmin() error = %v, wantErr %v", err, tt.wantErr)
@@ -70,9 +72,9 @@ func TestAdminScopeGet(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiAdminScopeGet, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiAdminScopeGet, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
@@ -107,9 +109,9 @@ func TestAppVisibility(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiAppVisibility, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiAppVisibility, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
@@ -144,9 +146,9 @@ func TestVisibleApps(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiVisibleApps, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiVisibleApps, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
@@ -181,9 +183,9 @@ func TestAppList(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiAppList, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiAppList, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
@@ -218,9 +220,9 @@ func TestUpdateVisibility(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiUpdateVisibility, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiUpdateVisibility, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -254,9 +256,9 @@ func TestAppAdminUserList(t *testing.T) {
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiAppAdminUserList, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiAppAdminUserList, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App

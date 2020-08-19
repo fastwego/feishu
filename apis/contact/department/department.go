@@ -24,12 +24,12 @@ import (
 )
 
 const (
-	apiDepartmentInfoGet        = "/open-apis/contact/v1/department/info/get"
-	apiDepartmentSimpleList     = "/open-apis/contact/v1/department/simple/list"
-	apiDepartmentDetailBatchGet = "/open-apis/contact/v1/department/detail/batch_get"
-	apiDepartmentAdd            = "/open-apis/contact/v1/department/add"
-	apiDepartmentDelete         = "/open-apis/contact/v1/department/delete"
-	apiDepartmentUpdate         = "/open-apis/contact/v1/department/update"
+	apiInfoGet        = "/open-apis/contact/v1/department/info/get"
+	apiSimpleList     = "/open-apis/contact/v1/department/simple/list"
+	apiDetailBatchGet = "/open-apis/contact/v1/department/detail/batch_get"
+	apiAdd            = "/open-apis/contact/v1/department/add"
+	apiDelete         = "/open-apis/contact/v1/department/delete"
+	apiUpdate         = "/open-apis/contact/v1/department/update"
 )
 
 /*
@@ -44,7 +44,7 @@ See: https://open.feishu.cn/document/ukTMukTMukTM/uAzNz4CM3MjLwczM
 
 GET https://open.feishu.cn/open-apis/contact/v1/department/info/get?department_id=TT-1234
 */
-func DepartmentInfoGet(ctx *feishu.App, params url.Values) (resp []byte, err error) {
+func InfoGet(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 
 	accessToken, err := ctx.GetTenantAccessTokenHandler()
 	if err != nil {
@@ -52,9 +52,9 @@ func DepartmentInfoGet(ctx *feishu.App, params url.Values) (resp []byte, err err
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiDepartmentInfoGet+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiInfoGet+"?"+params.Encode(), header)
 }
 
 /*
@@ -70,7 +70,7 @@ See: https://open.feishu.cn/document/ukTMukTMukTM/ugzN3QjL4czN04CO3cDN
 
 GET https://open.feishu.cn/open-apis/contact/v1/department/simple/list?department_id=TT-1234&page_size=10&fetch_child=true
 */
-func DepartmentSimpleList(ctx *feishu.App, params url.Values) (resp []byte, err error) {
+func SimpleList(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 
 	accessToken, err := ctx.GetTenantAccessTokenHandler()
 	if err != nil {
@@ -78,9 +78,9 @@ func DepartmentSimpleList(ctx *feishu.App, params url.Values) (resp []byte, err 
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiDepartmentSimpleList+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiSimpleList+"?"+params.Encode(), header)
 }
 
 /*
@@ -95,7 +95,7 @@ See: https://open.feishu.cn/document/ukTMukTMukTM/uczN3QjL3czN04yN3cDN
 
 GET https://open.feishu.cn/open-apis/contact/v1/department/detail/batch_get?department_ids=od-2efe30807a10608754862a63b108828f&department_ids=od-da6427b2adbceb91204d7fa6aeb7e8ff
 */
-func DepartmentDetailBatchGet(ctx *feishu.App, params url.Values) (resp []byte, err error) {
+func DetailBatchGet(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 
 	accessToken, err := ctx.GetTenantAccessTokenHandler()
 	if err != nil {
@@ -103,9 +103,9 @@ func DepartmentDetailBatchGet(ctx *feishu.App, params url.Values) (resp []byte, 
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiDepartmentDetailBatchGet+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiDetailBatchGet+"?"+params.Encode(), header)
 }
 
 /*
@@ -122,7 +122,7 @@ See: https://open.feishu.cn/document/ukTMukTMukTM/uYzNz4iN3MjL2czM
 
 POST https://open.feishu.cn/open-apis/contact/v1/department/add
 */
-func DepartmentAdd(ctx *feishu.App, payload []byte) (resp []byte, err error) {
+func Add(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 
 	accessToken, err := ctx.GetTenantAccessTokenHandler()
 	if err != nil {
@@ -130,9 +130,9 @@ func DepartmentAdd(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiDepartmentAdd, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiAdd, bytes.NewReader(payload), header)
 }
 
 /*
@@ -148,7 +148,7 @@ See: https://open.feishu.cn/document/ukTMukTMukTM/ugzNz4CO3MjL4czM
 
 POST https://open.feishu.cn/open-apis/contact/v1/department/delete
 */
-func DepartmentDelete(ctx *feishu.App, payload []byte) (resp []byte, err error) {
+func Delete(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 
 	accessToken, err := ctx.GetTenantAccessTokenHandler()
 	if err != nil {
@@ -156,9 +156,9 @@ func DepartmentDelete(ctx *feishu.App, payload []byte) (resp []byte, err error) 
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiDepartmentDelete, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiDelete, bytes.NewReader(payload), header)
 }
 
 /*
@@ -174,7 +174,7 @@ See: https://open.feishu.cn/document/ukTMukTMukTM/uczNz4yN3MjL3czM
 
 POST https://open.feishu.cn/open-apis/contact/v1/department/update
 */
-func DepartmentUpdate(ctx *feishu.App, payload []byte) (resp []byte, err error) {
+func Update(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 
 	accessToken, err := ctx.GetTenantAccessTokenHandler()
 	if err != nil {
@@ -182,7 +182,7 @@ func DepartmentUpdate(ctx *feishu.App, payload []byte) (resp []byte, err error) 
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiDepartmentUpdate, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiUpdate, bytes.NewReader(payload), header)
 }

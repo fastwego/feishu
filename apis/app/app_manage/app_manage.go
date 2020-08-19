@@ -44,7 +44,7 @@ See: https://open.feishu.cn/document/ukTMukTMukTM/uITN1EjLyUTNx4iM1UTM
 
 GET https://open.feishu.cn/open-apis/application/v3/is_user_admin
 */
-func IsUserAdmin(ctx *feishu.App) (resp []byte, err error) {
+func IsUserAdmin(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 
 	accessToken, err := ctx.GetTenantAccessTokenHandler()
 	if err != nil {
@@ -52,9 +52,9 @@ func IsUserAdmin(ctx *feishu.App) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiIsUserAdmin, header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiIsUserAdmin+"?"+params.Encode(), header)
 }
 
 /*
@@ -76,9 +76,9 @@ func AdminScopeGet(ctx *feishu.App, params url.Values) (resp []byte, err error) 
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiAdminScopeGet+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiAdminScopeGet+"?"+params.Encode(), header)
 }
 
 /*
@@ -100,9 +100,9 @@ func AppVisibility(ctx *feishu.App, params url.Values) (resp []byte, err error) 
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiAppVisibility+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiAppVisibility+"?"+params.Encode(), header)
 }
 
 /*
@@ -124,9 +124,9 @@ func VisibleApps(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiVisibleApps+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiVisibleApps+"?"+params.Encode(), header)
 }
 
 /*
@@ -148,9 +148,9 @@ func AppList(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiAppList+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiAppList+"?"+params.Encode(), header)
 }
 
 /*
@@ -172,9 +172,9 @@ func UpdateVisibility(ctx *feishu.App, payload []byte) (resp []byte, err error) 
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiUpdateVisibility, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiUpdateVisibility, bytes.NewReader(payload), header)
 }
 
 /*
@@ -200,7 +200,7 @@ func AppAdminUserList(ctx *feishu.App) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiAppAdminUserList, header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiAppAdminUserList, header)
 }

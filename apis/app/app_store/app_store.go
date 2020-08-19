@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package appstore 应用信息/应用商店
-package appstore
+// Package app_store 应用信息/应用商店
+package app_store
 
 import (
 	"net/http"
@@ -23,9 +23,32 @@ import (
 )
 
 const (
+	apiCheckUser = "/open-apis/pay/v1/paid_scope/check_user"
 	apiOrderList = "/open-apis/pay/v1/order/list"
 	apiOrderGet  = "/open-apis/pay/v1/order/get"
 )
+
+/*
+查询用户是否在应用开通范围
+
+该接口用于查询用户是否在企业管理员设置的使用该应用的范围中。如果设置的付费套餐是按人收费或者限制了最大人数，开放平台会引导企业管理员设置“付费功能开通范围”，本接口用于查询用户是否在企业管理员设置的使用该应用的范围中，可以通过此接口，在付费功能点入口判断是否允许某个用户进入使用。
+
+See: https://open.feishu.cn/document/ukTMukTMukTM/uATNwUjLwUDM14CM1ATN
+
+GET https://open.feishu.cn/open-apis/pay/v1/paid_scope/check_user?open_id=ou_5ad573a6411d72b8305fda3a9c15c70e
+*/
+func CheckUser(ctx *feishu.App, params url.Values) (resp []byte, err error) {
+
+	accessToken, err := ctx.GetTenantAccessTokenHandler()
+	if err != nil {
+		return
+	}
+	header := http.Header{}
+	header.Set("Authorization", "Bearer "+accessToken)
+	header.Set("Content-Type", "application/json")
+
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiCheckUser+"?"+params.Encode(), header)
+}
 
 /*
 查询租户购买的付费方案
@@ -45,9 +68,9 @@ func OrderList(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiOrderList+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiOrderList+"?"+params.Encode(), header)
 }
 
 /*
@@ -68,7 +91,7 @@ func OrderGet(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiOrderGet+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiOrderGet+"?"+params.Encode(), header)
 }

@@ -48,6 +48,7 @@ func NewPublicApp(config AppConfig, tenantKey string) (publicApp *PublicApp) {
 	return
 }
 
+// GetAppTicket 获取 AppTicket
 func (ctx *PublicApp) GetAppTicket() (appTicket string, err error) {
 	appTicket, err = ctx.Cache.Fetch("app_ticket:" + ctx.Config.AppId)
 	if appTicket != "" {
@@ -59,6 +60,7 @@ func (ctx *PublicApp) GetAppTicket() (appTicket string, err error) {
 	return
 }
 
+// RequestAppTicket 请求重新发送 app_ticket
 func (ctx *PublicApp) RequestAppTicket() {
 
 	params := struct {
@@ -89,6 +91,7 @@ func (ctx *PublicApp) RequestAppTicket() {
 
 }
 
+// ReceiveAppTicket 接收 app_ticket 并 存储到 缓存
 func (ctx *PublicApp) ReceiveAppTicket(ticket string) (err error) {
 	return ctx.Cache.Save("app_ticket:"+ctx.Config.AppId, ticket, 0)
 }
@@ -124,8 +127,7 @@ func (ctx *PublicApp) GetAppAccessToken() (accessToken string, err error) {
 	}
 
 	// 提前过期 提供冗余时间
-	expiresIn = int(0.9 * float64(expiresIn))
-	d := time.Duration(expiresIn) * time.Second
+	d := time.Duration(expiresIn-300) * time.Second
 	_ = ctx.Cache.Save(cacheKey, accessToken, d)
 
 	if ctx.Logger != nil {
@@ -209,7 +211,6 @@ var getPublicTenantAccessTokenLock sync.Mutex
 
 如果没有 access_token 或者 已过期，那么刷新
 
-获得新的 access_token 后 过期时间设置为 0.9 * expiresIn 提供一定冗余
 */
 func (ctx *PublicApp) GetTenantAccessToken() (accessToken string, err error) {
 	cacheKey := "tenant_access_token:" + ctx.TenantKey + ":" + ctx.Config.AppId
@@ -234,8 +235,7 @@ func (ctx *PublicApp) GetTenantAccessToken() (accessToken string, err error) {
 	}
 
 	// 提前过期 提供冗余时间
-	expiresIn = int(0.9 * float64(expiresIn))
-	d := time.Duration(expiresIn) * time.Second
+	d := time.Duration(expiresIn-300) * time.Second
 	_ = ctx.Cache.Save(cacheKey, accessToken, d)
 
 	if ctx.Logger != nil {

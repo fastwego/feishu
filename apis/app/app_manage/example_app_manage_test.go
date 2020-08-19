@@ -19,13 +19,14 @@ import (
 	"net/url"
 
 	"github.com/fastwego/feishu"
-	"github.com/fastwego/feishu/apis/appinfo/app_manage"
+	"github.com/fastwego/feishu/apis/app/app_manage"
 )
 
 func ExampleIsUserAdmin() {
 	var ctx *feishu.App
 
-	resp, err := app_manage.IsUserAdmin(ctx)
+	params := url.Values{}
+	resp, err := app_manage.IsUserAdmin(ctx, params)
 
 	fmt.Println(resp, err)
 }
@@ -34,7 +35,6 @@ func ExampleAdminScopeGet() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
 	resp, err := app_manage.AdminScopeGet(ctx, params)
 
 	fmt.Println(resp, err)
@@ -44,7 +44,6 @@ func ExampleAppVisibility() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
 	resp, err := app_manage.AppVisibility(ctx, params)
 
 	fmt.Println(resp, err)
@@ -54,7 +53,6 @@ func ExampleVisibleApps() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
 	resp, err := app_manage.VisibleApps(ctx, params)
 
 	fmt.Println(resp, err)
@@ -64,7 +62,6 @@ func ExampleAppList() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
 	resp, err := app_manage.AppList(ctx, params)
 
 	fmt.Println(resp, err)
@@ -74,7 +71,6 @@ func ExampleUpdateVisibility() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
 	resp, err := app_manage.UpdateVisibility(ctx, payload)
 
 	fmt.Println(resp, err)

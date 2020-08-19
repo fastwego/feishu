@@ -30,14 +30,14 @@ func TestMain(m *testing.M) {
 	os.Exit(m.Run())
 }
 
-func TestDepartmentInfoGet(t *testing.T) {
+func TestInfoGet(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiDepartmentInfoGet, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiInfoGet, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
@@ -55,26 +55,26 @@ func TestDepartmentInfoGet(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := DepartmentInfoGet(tt.args.ctx, tt.args.params)
+			gotResp, err := InfoGet(tt.args.ctx, tt.args.params)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("DepartmentInfoGet() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("InfoGet() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("DepartmentInfoGet() gotResp = %v, want %v", gotResp, tt.wantResp)
+				t.Errorf("InfoGet() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}
 }
-func TestDepartmentSimpleList(t *testing.T) {
+func TestSimpleList(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiDepartmentSimpleList, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiSimpleList, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
@@ -92,26 +92,26 @@ func TestDepartmentSimpleList(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := DepartmentSimpleList(tt.args.ctx, tt.args.params)
+			gotResp, err := SimpleList(tt.args.ctx, tt.args.params)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("DepartmentSimpleList() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("SimpleList() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("DepartmentSimpleList() gotResp = %v, want %v", gotResp, tt.wantResp)
+				t.Errorf("SimpleList() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}
 }
-func TestDepartmentDetailBatchGet(t *testing.T) {
+func TestDetailBatchGet(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiDepartmentDetailBatchGet, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiDetailBatchGet, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("GET")
 
 	type args struct {
 		ctx *feishu.App
@@ -129,26 +129,26 @@ func TestDepartmentDetailBatchGet(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := DepartmentDetailBatchGet(tt.args.ctx, tt.args.params)
+			gotResp, err := DetailBatchGet(tt.args.ctx, tt.args.params)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("DepartmentDetailBatchGet() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("DetailBatchGet() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("DepartmentDetailBatchGet() gotResp = %v, want %v", gotResp, tt.wantResp)
+				t.Errorf("DetailBatchGet() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}
 }
-func TestDepartmentAdd(t *testing.T) {
+func TestAdd(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiDepartmentAdd, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiAdd, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -165,26 +165,26 @@ func TestDepartmentAdd(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := DepartmentAdd(tt.args.ctx, tt.args.payload)
+			gotResp, err := Add(tt.args.ctx, tt.args.payload)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("DepartmentAdd() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("Add() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("DepartmentAdd() gotResp = %v, want %v", gotResp, tt.wantResp)
+				t.Errorf("Add() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}
 }
-func TestDepartmentDelete(t *testing.T) {
+func TestDelete(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiDepartmentDelete, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiDelete, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -201,26 +201,26 @@ func TestDepartmentDelete(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := DepartmentDelete(tt.args.ctx, tt.args.payload)
+			gotResp, err := Delete(tt.args.ctx, tt.args.payload)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("DepartmentDelete() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("Delete() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("DepartmentDelete() gotResp = %v, want %v", gotResp, tt.wantResp)
+				t.Errorf("Delete() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}
 }
-func TestDepartmentUpdate(t *testing.T) {
+func TestUpdate(t *testing.T) {
 	mockResp := map[string][]byte{
 		"case1": []byte("{\"errcode\":0,\"errmsg\":\"ok\"}"),
 	}
 	var resp []byte
-	test.MockSvrHandler.HandleFunc(apiDepartmentUpdate, func(w http.ResponseWriter, r *http.Request) {
+	test.MockRouter.HandleFunc(apiUpdate, func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(resp))
-	})
+	}).Methods("POST")
 
 	type args struct {
 		ctx     *feishu.App
@@ -237,14 +237,14 @@ func TestDepartmentUpdate(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			resp = mockResp[tt.name]
-			gotResp, err := DepartmentUpdate(tt.args.ctx, tt.args.payload)
+			gotResp, err := Update(tt.args.ctx, tt.args.payload)
 			//fmt.Println(string(gotResp), err)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("DepartmentUpdate() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("Update() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if !reflect.DeepEqual(gotResp, tt.wantResp) {
-				t.Errorf("DepartmentUpdate() gotResp = %v, want %v", gotResp, tt.wantResp)
+				t.Errorf("Update() gotResp = %v, want %v", gotResp, tt.wantResp)
 			}
 		})
 	}

@@ -29,6 +29,8 @@ import (
 
 // GetTenantAccessTokenFunc 获取 tenant_access_token 方法接口
 type GetTenantAccessTokenFunc func() (accessToken string, err error)
+
+// GetAppAccessTokenFunc 获取 app_access_token 方法接口
 type GetAppAccessTokenFunc func() (accessToken string, err error)
 
 /*
@@ -63,7 +65,7 @@ func newApp(config AppConfig) (app *App) {
 	instance.Client = Client{Ctx: &instance}
 	instance.Server = Server{Ctx: &instance}
 
-	instance.Logger = log.New(os.Stdout, "[feishu] ", log.LstdFlags|log.Llongfile)
+	instance.Logger = log.New(os.Stdout, "[fastwego/feishu] ", log.LstdFlags|log.Llongfile)
 
 	return &instance
 }

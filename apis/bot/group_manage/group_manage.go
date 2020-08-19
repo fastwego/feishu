@@ -53,9 +53,9 @@ func ChatCreate(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiChatCreate, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiChatCreate, bytes.NewReader(payload), header)
 }
 
 /*
@@ -70,7 +70,7 @@ See: https://open.feishu.cn/document/ukTMukTMukTM/uITO5QjLykTO04iM5kDN
 
 GET https://open.feishu.cn/open-apis/chat/v4/list
 */
-func ChatList(ctx *feishu.App) (resp []byte, err error) {
+func ChatList(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 
 	accessToken, err := ctx.GetTenantAccessTokenHandler()
 	if err != nil {
@@ -78,9 +78,9 @@ func ChatList(ctx *feishu.App) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiChatList, header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiChatList+"?"+params.Encode(), header)
 }
 
 /*
@@ -103,9 +103,9 @@ func ChatInfo(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiChatInfo+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiChatInfo+"?"+params.Encode(), header)
 }
 
 /*
@@ -128,9 +128,9 @@ func ChatUpdate(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiChatUpdate, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiChatUpdate, bytes.NewReader(payload), header)
 }
 
 /*
@@ -153,9 +153,9 @@ func ChatterAdd(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiChatterAdd, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiChatterAdd, bytes.NewReader(payload), header)
 }
 
 /*
@@ -178,9 +178,9 @@ func ChatterDelete(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiChatterDelete, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiChatterDelete, bytes.NewReader(payload), header)
 }
 
 /*
@@ -203,7 +203,7 @@ func Disband(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiDisband, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiDisband, bytes.NewReader(payload), header)
 }

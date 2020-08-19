@@ -15,6 +15,7 @@
 package feishu
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -27,6 +28,7 @@ import (
 飞书 api 服务器地址
 */
 var FeishuServerUrl = "https://open.feishu.cn"
+var FeishuServerUrl2 = "https://www.feishu.cn"
 
 /*
 HttpClient 用于向 接口发送请求
@@ -36,63 +38,72 @@ type Client struct {
 }
 
 // HTTPGet GET 请求
-func (client *Client) HTTPGet(uri string, header http.Header) (resp []byte, err error) {
-	url := FeishuServerUrl + uri
+func (client *Client) HTTPGet(url string, header http.Header) (resp []byte, err error) {
 
-	httpClient := &http.Client{}
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return
 	}
 	req.Header = header
 
-	if client.Ctx.Logger != nil {
-		client.Ctx.Logger.Printf("GET %s Headers %v", req.URL.String(), req.Header)
-	}
-	response, err := httpClient.Do(req)
-	if err != nil {
-		return
-	}
-	defer response.Body.Close()
-	return responseFilter(response)
+	return client.HTTPDo(req)
 }
 
 //HTTPPost POST 请求
-func (client *Client) HTTPPost(uri string, payload io.Reader, header http.Header) (resp []byte, err error) {
+func (client *Client) HTTPPost(url string, payload io.Reader, header http.Header) (resp []byte, err error) {
 
-	url := FeishuServerUrl + uri
-
-	httpClient := &http.Client{}
 	req, err := http.NewRequest(http.MethodPost, url, payload)
 	if err != nil {
 		return
 	}
 	req.Header = header
 
-	if client.Ctx.Logger != nil {
-		client.Ctx.Logger.Printf("POST %s Headers %v", req.URL.String(), req.Header)
-	}
-	response, err := httpClient.Do(req)
-	if err != nil {
-		return
-	}
-	defer response.Body.Close()
-	return responseFilter(response)
+	return client.HTTPDo(req)
 }
 
-func (client *Client) HTTPDelete(uri string, header http.Header) (resp []byte, err error) {
-	url := FeishuServerUrl + uri
+//HTTPDelete DELETE 请求
+func (client *Client) HTTPDelete(url string, header http.Header) (resp []byte, err error) {
 
-	httpClient := &http.Client{}
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
 		return
 	}
 	req.Header = header
 
-	if client.Ctx.Logger != nil {
-		client.Ctx.Logger.Printf("DELETE %s Headers %v", req.URL.String(), req.Header)
+	return client.HTTPDo(req)
+}
+
+//HTTPPatch PATCH 请求
+func (client *Client) HTTPPatch(url string, payload io.Reader, header http.Header) (resp []byte, err error) {
+
+	req, err := http.NewRequest(http.MethodPatch, url, payload)
+	if err != nil {
+		return
 	}
+	req.Header = header
+
+	return client.HTTPDo(req)
+}
+
+//HTTPut PUT 请求
+func (client *Client) HTTPPut(url string, payload io.Reader, header http.Header) (resp []byte, err error) {
+
+	req, err := http.NewRequest(http.MethodPut, url, payload)
+	if err != nil {
+		return
+	}
+	req.Header = header
+
+	return client.HTTPDo(req)
+}
+
+//HTTPDo 执行 请求
+func (client *Client) HTTPDo(req *http.Request) (resp []byte, err error) {
+	if client.Ctx.Logger != nil {
+		client.Ctx.Logger.Printf("%s %s Headers %v", req.Method, req.URL.String(), req.Header)
+	}
+
+	httpClient := &http.Client{}
 	response, err := httpClient.Do(req)
 	if err != nil {
 		return
@@ -119,18 +130,20 @@ func responseFilter(response *http.Response) (resp []byte, err error) {
 		return
 	}
 
-	errorResponse := struct {
-		Code int64  `json:"code"`
-		Msg  string `json:"msg"`
-	}{}
-	err = json.Unmarshal(resp, &errorResponse)
-	if err != nil {
-		return
-	}
+	if bytes.HasPrefix(resp, []byte(`{`)) { // 只针对 json 数据
+		errorResponse := struct {
+			Code int64  `json:"code"`
+			Msg  string `json:"msg"`
+		}{}
+		err = json.Unmarshal(resp, &errorResponse)
+		if err != nil {
+			return
+		}
 
-	if errorResponse.Code != 0 {
-		err = errors.New(string(resp))
-		return
+		if errorResponse.Code != 0 {
+			err = errors.New(string(resp))
+			return
+		}
 	}
 
 	return

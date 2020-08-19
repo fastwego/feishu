@@ -38,6 +38,55 @@ type ApiGroup struct {
 
 var apiConfig = []ApiGroup{
 	{
+		Name:    `身份认证`,
+		Package: `authen`,
+		Apis: []Api{
+			{
+				Name:        "获取用户授权跳转链接",
+				Description: "应用请求用户身份验证时，需按如下方式构造登录链接，并引导用户跳转至此链接。飞书客户端内用户免登，系统浏览器内用户需完成扫码登录。登录成功后会生成登录预授权码 code，并作为参数重定向到重定向URL。",
+				Request:     "GET https://open.feishu.cn/open-apis/authen/v1/index?redirect_uri={REDIRECT_URI}&app_id={APPID}&state={STATE}",
+				See:         "https://open.feishu.cn/document/ukTMukTMukTM/ukzN4UjL5cDO14SO3gTN",
+				FuncName:    "GetRedirectUri",
+				GetParams: []Param{
+					{Name: `app_id`, Type: `string`},
+					{Name: `redirect_uri`, Type: `string`},
+					{Name: `state`, Type: `string`},
+				},
+			},
+			{
+				Name:        "获取登录用户身份",
+				Description: "通过此接口获取登录预授权码 code 对应的登录用户身份。",
+				Request:     "POST https://open.feishu.cn/open-apis/authen/v1/access_token",
+				See:         "https://open.feishu.cn/document/ukTMukTMukTM/uEDO4UjLxgDO14SM4gTN",
+				FuncName:    "GetAccessToken",
+			},
+			{
+				Name:        "刷新access_token",
+				Description: "该接口用于在 access_token 过期时用 refresh_token 重新获取 access_token。此时会返回新的 refresh_token，再次刷新 access_token 时需要使用新的 refresh_token。",
+				Request:     "POST https://open.feishu.cn/open-apis/authen/v1/refresh_access_token",
+				See:         "https://open.feishu.cn/document/ukTMukTMukTM/uQDO4UjL0gDO14CN4gTN",
+				FuncName:    "RefreshAccessToken",
+			},
+			{
+				Name:        "获取用户信息（身份验证）",
+				Description: "此接口仅用于获取登录用户的信息。调用此接口需要在 Header 中带上 user_access_token。\n\n",
+				Request:     "GET https://open.feishu.cn/open-apis/authen/v1/user_info",
+				See:         "https://open.feishu.cn/document/ukTMukTMukTM/uIDO4UjLygDO14iM4gTN",
+				FuncName:    "GetUserInfo",
+				GetParams: []Param{
+					{Name: `user_access_token`, Type: `string`},
+				},
+			},
+			{
+				Name:        "小程序登录/code2session",
+				Description: "通过 login 接口获取到登录凭证后，开发者可以通过服务器发送请求的方式获取 session_key 和 openId",
+				Request:     "POST https://open.feishu.cn/open-apis/mina/v2/tokenLoginValidate",
+				See:         "https://open.feishu.cn/document/uYjL24iN/ukjM04SOyQjL5IDN",
+				FuncName:    "Code2Session",
+			},
+		},
+	},
+	{
 		Name:    `用户管理`,
 		Package: `contact/user`,
 		Apis: []Api{
@@ -210,7 +259,7 @@ var apiConfig = []ApiGroup{
 `,
 				Request:  "GET https://open.feishu.cn/open-apis/contact/v1/department/info/get?department_id=TT-1234",
 				See:      "https://open.feishu.cn/document/ukTMukTMukTM/uAzNz4CM3MjLwczM",
-				FuncName: "DepartmentInfoGet",
+				FuncName: "InfoGet",
 				GetParams: []Param{
 					{Name: `department_id`, Type: `string`},
 				},
@@ -224,7 +273,7 @@ var apiConfig = []ApiGroup{
 `,
 				Request:  "GET https://open.feishu.cn/open-apis/contact/v1/department/simple/list?department_id=TT-1234&page_size=10&fetch_child=true",
 				See:      "https://open.feishu.cn/document/ukTMukTMukTM/ugzN3QjL4czN04CO3cDN",
-				FuncName: "DepartmentSimpleList",
+				FuncName: "SimpleList",
 				GetParams: []Param{
 					{Name: `fetch_child`, Type: `string`},
 					{Name: `department_id`, Type: `string`},
@@ -239,7 +288,7 @@ var apiConfig = []ApiGroup{
 `,
 				Request:  "GET https://open.feishu.cn/open-apis/contact/v1/department/detail/batch_get?department_ids=od-2efe30807a10608754862a63b108828f&department_ids=od-da6427b2adbceb91204d7fa6aeb7e8ff",
 				See:      "https://open.feishu.cn/document/ukTMukTMukTM/uczN3QjL3czN04yN3cDN",
-				FuncName: "DepartmentDetailBatchGet",
+				FuncName: "DetailBatchGet",
 				GetParams: []Param{
 					{Name: `department_ids`, Type: `string`},
 				},
@@ -254,7 +303,7 @@ var apiConfig = []ApiGroup{
 `,
 				Request:  "POST https://open.feishu.cn/open-apis/contact/v1/department/add",
 				See:      "https://open.feishu.cn/document/ukTMukTMukTM/uYzNz4iN3MjL2czM",
-				FuncName: "DepartmentAdd",
+				FuncName: "Add",
 			},
 			{
 				Name: "删除部门",
@@ -265,7 +314,7 @@ var apiConfig = []ApiGroup{
 `,
 				Request:  "POST https://open.feishu.cn/open-apis/contact/v1/department/delete",
 				See:      "https://open.feishu.cn/document/ukTMukTMukTM/ugzNz4CO3MjL4czM",
-				FuncName: "DepartmentDelete",
+				FuncName: "Delete",
 			},
 			{
 				Name: "更新部门信息",
@@ -276,7 +325,7 @@ var apiConfig = []ApiGroup{
 `,
 				Request:  "POST https://open.feishu.cn/open-apis/contact/v1/department/update",
 				See:      "https://open.feishu.cn/document/ukTMukTMukTM/uczNz4yN3MjL3czM",
-				FuncName: "DepartmentUpdate",
+				FuncName: "Update",
 			},
 		},
 	},
@@ -398,7 +447,7 @@ var apiConfig = []ApiGroup{
 	},
 	{
 		Name:    `应用信息/应用管理`,
-		Package: `appinfo/app_manage`,
+		Package: `app/app_manage`,
 		Apis: []Api{
 			{
 				Name: "校验应用管理员",
@@ -408,6 +457,9 @@ var apiConfig = []ApiGroup{
 				Request:  "GET https://open.feishu.cn/open-apis/application/v3/is_user_admin",
 				See:      "https://open.feishu.cn/document/ukTMukTMukTM/uITN1EjLyUTNx4iM1UTM",
 				FuncName: "IsUserAdmin",
+				GetParams: []Param{
+					{Name: `open_id`, Type: `string`},
+				},
 			},
 			{
 				Name: "获取应用管理员管理范围",
@@ -491,8 +543,18 @@ var apiConfig = []ApiGroup{
 	},
 	{
 		Name:    `应用信息/应用商店`,
-		Package: `appinfo/appstore`,
+		Package: `app/app_store`,
 		Apis: []Api{
+			{
+				Name:        "查询用户是否在应用开通范围",
+				Description: `该接口用于查询用户是否在企业管理员设置的使用该应用的范围中。如果设置的付费套餐是按人收费或者限制了最大人数，开放平台会引导企业管理员设置“付费功能开通范围”，本接口用于查询用户是否在企业管理员设置的使用该应用的范围中，可以通过此接口，在付费功能点入口判断是否允许某个用户进入使用。`,
+				Request:     "GET https://open.feishu.cn/open-apis/pay/v1/paid_scope/check_user?open_id=ou_5ad573a6411d72b8305fda3a9c15c70e",
+				See:         "https://open.feishu.cn/document/ukTMukTMukTM/uATNwUjLwUDM14CM1ATN",
+				FuncName:    "CheckUser",
+				GetParams: []Param{
+					{Name: `open_id`, Type: `string`},
+				},
+			},
 			{
 				Name: "查询租户购买的付费方案",
 				Description: `该接口用于分页查询应用租户下的已付费订单，每次购买对应一个唯一的订单，订单会记录购买的套餐的相关信息，业务方需要自行处理套餐的有效期和付费方案的升级。
@@ -543,6 +605,9 @@ var apiConfig = []ApiGroup{
 				Request:  "GET https://open.feishu.cn/open-apis/chat/v4/list",
 				See:      "https://open.feishu.cn/document/ukTMukTMukTM/uITO5QjLykTO04iM5kDN",
 				FuncName: "ChatList",
+				GetParams: []Param{
+					{Name: `page_size`, Type: `page_size`},
+				},
 			},
 			{
 				Name: "获取群信息",
@@ -652,9 +717,9 @@ var apiConfig = []ApiGroup{
 				FuncName: "BatchSend",
 			},
 			{
-				Name: "发送文本消息",
+				Name: "发送消息",
 				Description: `
-给指定用户或者会话发送文本消息，其中会话包括私聊会话和群会话。
+给指定用户或者会话发送文本/图片/富文本/群名片/消息卡片 消息，其中会话包括私聊会话和群会话。
 
 **权限说明** ：需要启用机器人能力；私聊会话时机器人需要拥有对用户的可见性，群会话需要机器人在群里  
 `,

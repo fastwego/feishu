@@ -26,7 +26,6 @@ func ExampleGetCalendarById() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
 	resp, err := calendar.GetCalendarById(ctx, params)
 
 	fmt.Println(resp, err)
@@ -35,7 +34,8 @@ func ExampleGetCalendarById() {
 func ExampleCalendarList() {
 	var ctx *feishu.App
 
-	resp, err := calendar.CalendarList(ctx)
+	params := url.Values{}
+	resp, err := calendar.CalendarList(ctx, params)
 
 	fmt.Println(resp, err)
 }
@@ -44,7 +44,6 @@ func ExampleCreateCalendars() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
 	resp, err := calendar.CreateCalendars(ctx, payload)
 
 	fmt.Println(resp, err)
@@ -54,8 +53,17 @@ func ExampleDeleteCalendarById() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
 	resp, err := calendar.DeleteCalendarById(ctx, params)
+
+	fmt.Println(resp, err)
+}
+
+func ExampleUpdateCalendarById() {
+	var ctx *feishu.App
+
+	payload := []byte("{}")
+	params := url.Values{}
+	resp, err := calendar.UpdateCalendarById(ctx, payload, params)
 
 	fmt.Println(resp, err)
 }
@@ -64,7 +72,6 @@ func ExampleGetEventById() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
 	resp, err := calendar.GetEventById(ctx, params)
 
 	fmt.Println(resp, err)
@@ -75,8 +82,35 @@ func ExampleCreateEvent() {
 
 	payload := []byte("{}")
 	params := url.Values{}
-
 	resp, err := calendar.CreateEvent(ctx, payload, params)
+
+	fmt.Println(resp, err)
+}
+
+func ExampleGetEvents() {
+	var ctx *feishu.App
+
+	params := url.Values{}
+	resp, err := calendar.GetEvents(ctx, params)
+
+	fmt.Println(resp, err)
+}
+
+func ExampleDeleteEventById() {
+	var ctx *feishu.App
+
+	params := url.Values{}
+	resp, err := calendar.DeleteEventById(ctx, params)
+
+	fmt.Println(resp, err)
+}
+
+func ExampleUpdateEventById() {
+	var ctx *feishu.App
+
+	payload := []byte("{}")
+	params := url.Values{}
+	resp, err := calendar.UpdateEventById(ctx, payload, params)
 
 	fmt.Println(resp, err)
 }
@@ -86,28 +120,35 @@ func ExampleAttendees() {
 
 	payload := []byte("{}")
 	params := url.Values{}
-
 	resp, err := calendar.Attendees(ctx, payload, params)
 
 	fmt.Println(resp, err)
 }
 
-func ExampleAcl() {
+func ExampleGetAcl() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
-	resp, err := calendar.Acl(ctx, params)
+	resp, err := calendar.GetAcl(ctx, params)
 
 	fmt.Println(resp, err)
 }
 
-func ExampleDeleteAclByRuleId() {
+func ExampleCreateAcl() {
+	var ctx *feishu.App
+
+	payload := []byte("{}")
+	params := url.Values{}
+	resp, err := calendar.CreateAcl(ctx, payload, params)
+
+	fmt.Println(resp, err)
+}
+
+func ExampleDeleteAcl() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
-	resp, err := calendar.DeleteAclByRuleId(ctx, params)
+	resp, err := calendar.DeleteAcl(ctx, params)
 
 	fmt.Println(resp, err)
 }
@@ -116,7 +157,6 @@ func ExampleFreeBusyQuery() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
 	resp, err := calendar.FreeBusyQuery(ctx, payload)
 
 	fmt.Println(resp, err)
@@ -126,7 +166,6 @@ func ExampleSharedCalendarQuery() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
 	resp, err := calendar.SharedCalendarQuery(ctx, params)
 
 	fmt.Println(resp, err)
@@ -136,7 +175,6 @@ func ExampleSharedCalendarEvents() {
 	var ctx *feishu.App
 
 	params := url.Values{}
-
 	resp, err := calendar.SharedCalendarEvents(ctx, params)
 
 	fmt.Println(resp, err)

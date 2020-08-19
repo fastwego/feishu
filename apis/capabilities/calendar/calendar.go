@@ -29,11 +29,16 @@ const (
 	apiCalendarList         = "/open-apis/calendar/v3/calendar_list"
 	apiCreateCalendars      = "/open-apis/calendar/v3/calendars"
 	apiDeleteCalendarById   = "/open-apis/calendar/v3/calendars/:calendarId"
+	apiUpdateCalendarById   = "/open-apis/calendar/v3/calendars/:calendarId"
 	apiGetEventById         = "/open-apis/calendar/v3/calendars/:calendarId/events/:eventId"
 	apiCreateEvent          = "/open-apis/calendar/v3/calendars/:calendarId/events"
+	apiGetEvents            = "/open-apis/calendar/v3/calendars/:calendarId/events"
+	apiDeleteEventById      = "/open-apis/calendar/v3/calendars/:calendarId/events/:eventId"
+	apiUpdateEventById      = "/open-apis/calendar/v3/calendars/:calendarId/events/:eventId"
 	apiAttendees            = "/open-apis/calendar/v3/calendars/:calendarId/events/:eventId/attendees"
-	apiAcl                  = "/open-apis/calendar/v3/calendars/:calendarId/acl"
-	apiDeleteAclByRuleId    = "/open-apis/calendar/v3/calendars/:calendarId/acl/:ruleId"
+	apiGetAcl               = "/open-apis/calendar/v3/calendars/:calendarId/acl"
+	apiCreateAcl            = "/open-apis/calendar/v3/calendars/:calendarId/acl"
+	apiDeleteAcl            = "/open-apis/calendar/v3/calendars/:calendarId/acl/:ruleId"
 	apiFreeBusyQuery        = "/open-apis/calendar/v3/freebusy/query"
 	apiSharedCalendarQuery  = "/open-apis/calendar/v3/shared_calendar_list/shared_calendar/query"
 	apiSharedCalendarEvents = "/open-apis/calendar/v3/shared/calendars/:calendarId/events"
@@ -63,9 +68,9 @@ func GetCalendarById(ctx *feishu.App, params url.Values) (resp []byte, err error
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(api, header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+api, header)
 }
 
 /*
@@ -79,7 +84,7 @@ See: https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uMTM14yMxUjLzETN
 
 GET https://open.feishu.cn/open-apis/calendar/v3/calendar_list
 */
-func CalendarList(ctx *feishu.App) (resp []byte, err error) {
+func CalendarList(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 
 	accessToken, err := ctx.GetTenantAccessTokenHandler()
 	if err != nil {
@@ -87,9 +92,9 @@ func CalendarList(ctx *feishu.App) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiCalendarList, header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiCalendarList+"?"+params.Encode(), header)
 }
 
 /*
@@ -111,9 +116,9 @@ func CreateCalendars(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiCreateCalendars, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiCreateCalendars, bytes.NewReader(payload), header)
 }
 
 /*
@@ -140,9 +145,38 @@ func DeleteCalendarById(ctx *feishu.App, params url.Values) (resp []byte, err er
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPDelete(api, header)
+	return ctx.Client.HTTPDelete(feishu.FeishuServerUrl+api, header)
+}
+
+/*
+更新日历
+
+
+该接口用于修改指定日历的信息。
+
+
+See: https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uYTM14iNxUjL2ETN
+
+PATCH https://open.feishu.cn/open-apis/calendar/v3/calendars/:calendarId
+*/
+func UpdateCalendarById(ctx *feishu.App, payload []byte, params url.Values) (resp []byte, err error) {
+
+	api := apiUpdateCalendarById
+	for paramName, paramValues := range params {
+		api = strings.ReplaceAll(api, ":"+paramName, paramValues[0])
+	}
+
+	accessToken, err := ctx.GetTenantAccessTokenHandler()
+	if err != nil {
+		return
+	}
+	header := http.Header{}
+	header.Set("Authorization", "Bearer "+accessToken)
+	header.Set("Content-Type", "application/json")
+
+	return ctx.Client.HTTPPatch(feishu.FeishuServerUrl+api, bytes.NewReader(payload), header)
 }
 
 /*
@@ -169,9 +203,9 @@ func GetEventById(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(api, header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+api, header)
 }
 
 /*
@@ -198,9 +232,96 @@ func CreateEvent(ctx *feishu.App, payload []byte, params url.Values) (resp []byt
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(api, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+api, bytes.NewReader(payload), header)
+}
+
+/*
+获取日程列表
+
+
+该接口用于获取指定日历下的日程列表。
+
+
+See: https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/ukTM14SOxUjL5ETN
+
+GET https://open.feishu.cn/open-apis/calendar/v3/calendars/:calendarId/events
+*/
+func GetEvents(ctx *feishu.App, params url.Values) (resp []byte, err error) {
+
+	api := apiGetEvents
+	for paramName, paramValues := range params {
+		api = strings.ReplaceAll(api, ":"+paramName, paramValues[0])
+	}
+
+	accessToken, err := ctx.GetTenantAccessTokenHandler()
+	if err != nil {
+		return
+	}
+	header := http.Header{}
+	header.Set("Authorization", "Bearer "+accessToken)
+	header.Set("Content-Type", "application/json")
+
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+api+"?"+params.Encode(), header)
+}
+
+/*
+删除日程
+
+
+该接口用于删除指定日历下的日程。
+
+
+See: https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uAjM14CMyUjLwITN
+
+DELETE https://open.feishu.cn/open-apis/calendar/v3/calendars/:calendarId/events/:eventId
+*/
+func DeleteEventById(ctx *feishu.App, params url.Values) (resp []byte, err error) {
+
+	api := apiDeleteEventById
+	for paramName, paramValues := range params {
+		api = strings.ReplaceAll(api, ":"+paramName, paramValues[0])
+	}
+
+	accessToken, err := ctx.GetTenantAccessTokenHandler()
+	if err != nil {
+		return
+	}
+	header := http.Header{}
+	header.Set("Authorization", "Bearer "+accessToken)
+	header.Set("Content-Type", "application/json")
+
+	return ctx.Client.HTTPDelete(feishu.FeishuServerUrl+api, header)
+}
+
+/*
+更新日程
+
+
+该接口用于更新日程信息。
+
+
+See: https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uEjM14SMyUjLxITN
+
+PATCH https://open.feishu.cn/open-apis/calendar/v3/calendars/:calendarId/events/:eventId
+*/
+func UpdateEventById(ctx *feishu.App, payload []byte, params url.Values) (resp []byte, err error) {
+
+	api := apiUpdateEventById
+	for paramName, paramValues := range params {
+		api = strings.ReplaceAll(api, ":"+paramName, paramValues[0])
+	}
+
+	accessToken, err := ctx.GetTenantAccessTokenHandler()
+	if err != nil {
+		return
+	}
+	header := http.Header{}
+	header.Set("Authorization", "Bearer "+accessToken)
+	header.Set("Content-Type", "application/json")
+
+	return ctx.Client.HTTPPatch(feishu.FeishuServerUrl+api, bytes.NewReader(payload), header)
 }
 
 /*
@@ -228,9 +349,9 @@ func Attendees(ctx *feishu.App, payload []byte, params url.Values) (resp []byte,
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(api, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+api, bytes.NewReader(payload), header)
 }
 
 /*
@@ -244,9 +365,9 @@ See: https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uMjM14yMyUjLzITN
 
 GET https://open.feishu.cn/open-apis/calendar/v3/calendars/:calendarId/acl
 */
-func Acl(ctx *feishu.App, params url.Values) (resp []byte, err error) {
+func GetAcl(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 
-	api := apiAcl
+	api := apiGetAcl
 	for paramName, paramValues := range params {
 		api = strings.ReplaceAll(api, ":"+paramName, paramValues[0])
 	}
@@ -257,9 +378,38 @@ func Acl(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(api, header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+api, header)
+}
+
+/*
+创建访问控制
+
+
+该接口用于邀请一个用户加入日历。
+
+
+See: https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uQjM14CNyUjL0ITN
+
+POST https://open.feishu.cn/open-apis/calendar/v3/calendars/:calendarId/acl
+*/
+func CreateAcl(ctx *feishu.App, payload []byte, params url.Values) (resp []byte, err error) {
+
+	api := apiCreateAcl
+	for paramName, paramValues := range params {
+		api = strings.ReplaceAll(api, ":"+paramName, paramValues[0])
+	}
+
+	accessToken, err := ctx.GetTenantAccessTokenHandler()
+	if err != nil {
+		return
+	}
+	header := http.Header{}
+	header.Set("Authorization", "Bearer "+accessToken)
+	header.Set("Content-Type", "application/json")
+
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+api, bytes.NewReader(payload), header)
 }
 
 /*
@@ -273,9 +423,9 @@ See: https://open.feishu.cn/document/ugTM5UjL4ETO14COxkTN/uUjM14SNyUjL1ITN
 
 DELETE https://open.feishu.cn/open-apis/calendar/v3/calendars/:calendarId/acl/:ruleId
 */
-func DeleteAclByRuleId(ctx *feishu.App, params url.Values) (resp []byte, err error) {
+func DeleteAcl(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 
-	api := apiDeleteAclByRuleId
+	api := apiDeleteAcl
 	for paramName, paramValues := range params {
 		api = strings.ReplaceAll(api, ":"+paramName, paramValues[0])
 	}
@@ -286,9 +436,9 @@ func DeleteAclByRuleId(ctx *feishu.App, params url.Values) (resp []byte, err err
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPDelete(api, header)
+	return ctx.Client.HTTPDelete(feishu.FeishuServerUrl+api, header)
 }
 
 /*
@@ -310,9 +460,9 @@ func FreeBusyQuery(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiFreeBusyQuery, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiFreeBusyQuery, bytes.NewReader(payload), header)
 }
 
 /*
@@ -334,9 +484,9 @@ func SharedCalendarQuery(ctx *feishu.App, params url.Values) (resp []byte, err e
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiSharedCalendarQuery+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiSharedCalendarQuery+"?"+params.Encode(), header)
 }
 
 /*
@@ -363,7 +513,7 @@ func SharedCalendarEvents(ctx *feishu.App, params url.Values) (resp []byte, err 
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(api, header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+api, header)
 }

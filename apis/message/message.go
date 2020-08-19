@@ -17,8 +17,12 @@ package message
 
 import (
 	"bytes"
+	"io"
+	"mime/multipart"
 	"net/http"
 	"net/url"
+	"os"
+	"path"
 
 	"github.com/fastwego/feishu"
 )
@@ -55,16 +59,16 @@ func BatchSend(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiBatchSend, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiBatchSend, bytes.NewReader(payload), header)
 }
 
 /*
-发送文本消息
+发送消息
 
 
-给指定用户或者会话发送文本消息，其中会话包括私聊会话和群会话。
+给指定用户或者会话发送文本/图片/富文本/群名片/消息卡片 消息，其中会话包括私聊会话和群会话。
 
 **权限说明** ：需要启用机器人能力；私聊会话时机器人需要拥有对用户的可见性，群会话需要机器人在群里
 
@@ -81,9 +85,9 @@ func Send(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiSend, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiSend, bytes.NewReader(payload), header)
 }
 
 /*
@@ -107,9 +111,9 @@ func ReadInfo(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiReadInfo, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiReadInfo, bytes.NewReader(payload), header)
 }
 
 /*
@@ -125,7 +129,34 @@ See: https://open.feishu.cn/document/ukTMukTMukTM/uEDO04SM4QjLxgDN
 
 POST https://open.feishu.cn/open-apis/image/v4/put/
 */
-func ImagePut(ctx *feishu.App, payload []byte) (resp []byte, err error) {
+func ImagePut(ctx *feishu.App, image string, params url.Values) (resp []byte, err error) {
+
+	r, w := io.Pipe()
+	m := multipart.NewWriter(w)
+	go func() {
+		defer w.Close()
+		defer m.Close()
+
+		part, err := m.CreateFormFile("image", path.Base(image))
+		if err != nil {
+			return
+		}
+		file, err := os.Open(image)
+		if err != nil {
+			return
+		}
+		defer file.Close()
+		if _, err = io.Copy(part, file); err != nil {
+			return
+		}
+
+		// field
+		err = m.WriteField("image_type", params.Get("image_type"))
+		if err != nil {
+			return
+		}
+
+	}()
 
 	accessToken, err := ctx.GetTenantAccessTokenHandler()
 	if err != nil {
@@ -133,9 +164,9 @@ func ImagePut(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", m.FormDataContentType())
 
-	return ctx.Client.HTTPPost(apiImagePut, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiImagePut, r, header)
 }
 
 /*
@@ -159,9 +190,9 @@ func ImageGet(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiImageGet+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiImageGet+"?"+params.Encode(), header)
 }
 
 /*
@@ -185,9 +216,9 @@ func FileGet(ctx *feishu.App, params url.Values) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPGet(apiFileGet+"?"+params.Encode(), header)
+	return ctx.Client.HTTPGet(feishu.FeishuServerUrl+apiFileGet+"?"+params.Encode(), header)
 }
 
 /*
@@ -210,7 +241,7 @@ func AppNotify(ctx *feishu.App, payload []byte) (resp []byte, err error) {
 	}
 	header := http.Header{}
 	header.Set("Authorization", "Bearer "+accessToken)
-	header.Set("Content-appType", "application/json")
+	header.Set("Content-Type", "application/json")
 
-	return ctx.Client.HTTPPost(apiAppNotify, bytes.NewReader(payload), header)
+	return ctx.Client.HTTPPost(feishu.FeishuServerUrl+apiAppNotify, bytes.NewReader(payload), header)
 }

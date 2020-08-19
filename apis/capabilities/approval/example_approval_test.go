@@ -12,21 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package approve_test
+package approval_test
 
 import (
 	"fmt"
 
 	"github.com/fastwego/feishu"
-	"github.com/fastwego/feishu/apis/capabilities/approve"
+	"github.com/fastwego/feishu/apis/capabilities/approval"
 )
 
 func ExampleGet() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
-	resp, err := approve.Get(ctx, payload)
+	resp, err := approval.Get(ctx, payload)
 
 	fmt.Println(resp, err)
 }
@@ -35,8 +34,7 @@ func ExampleInstanceList() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
-	resp, err := approve.InstanceList(ctx, payload)
+	resp, err := approval.InstanceList(ctx, payload)
 
 	fmt.Println(resp, err)
 }
@@ -45,8 +43,7 @@ func ExampleInstanceGet() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
-	resp, err := approve.InstanceGet(ctx, payload)
+	resp, err := approval.InstanceGet(ctx, payload)
 
 	fmt.Println(resp, err)
 }
@@ -55,8 +52,7 @@ func ExampleInstanceCreate() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
-	resp, err := approve.InstanceCreate(ctx, payload)
+	resp, err := approval.InstanceCreate(ctx, payload)
 
 	fmt.Println(resp, err)
 }
@@ -65,8 +61,7 @@ func ExampleApprove() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
-	resp, err := approve.Approve(ctx, payload)
+	resp, err := approval.Approve(ctx, payload)
 
 	fmt.Println(resp, err)
 }
@@ -75,8 +70,7 @@ func ExampleReject() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
-	resp, err := approve.Reject(ctx, payload)
+	resp, err := approval.Reject(ctx, payload)
 
 	fmt.Println(resp, err)
 }
@@ -85,8 +79,7 @@ func ExampleTransfer() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
-	resp, err := approve.Transfer(ctx, payload)
+	resp, err := approval.Transfer(ctx, payload)
 
 	fmt.Println(resp, err)
 }
@@ -95,18 +88,7 @@ func ExampleCancel() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
-	resp, err := approve.Cancel(ctx, payload)
-
-	fmt.Println(resp, err)
-}
-
-func ExampleUpload() {
-	var ctx *feishu.App
-
-	payload := []byte("{}")
-
-	resp, err := approve.Upload(ctx, payload)
+	resp, err := approval.Cancel(ctx, payload)
 
 	fmt.Println(resp, err)
 }
@@ -115,18 +97,43 @@ func ExampleExternalInstanceCreate() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
-	resp, err := approve.ExternalInstanceCreate(ctx, payload)
+	resp, err := approval.ExternalInstanceCreate(ctx, payload)
 
 	fmt.Println(resp, err)
 }
 
-func ExampleCreate() {
+func ExampleExternalInstanceCheck() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
+	resp, err := approval.ExternalInstanceCheck(ctx, payload)
 
-	resp, err := approve.Create(ctx, payload)
+	fmt.Println(resp, err)
+}
+
+func ExampleMessageSend() {
+	var ctx *feishu.App
+
+	payload := []byte("{}")
+	resp, err := approval.MessageSend(ctx, payload)
+
+	fmt.Println(resp, err)
+}
+
+func ExampleMessageUpdate() {
+	var ctx *feishu.App
+
+	payload := []byte("{}")
+	resp, err := approval.MessageUpdate(ctx, payload)
+
+	fmt.Println(resp, err)
+}
+
+func ExampleApprovalCreate() {
+	var ctx *feishu.App
+
+	payload := []byte("{}")
+	resp, err := approval.ApprovalCreate(ctx, payload)
 
 	fmt.Println(resp, err)
 }
@@ -135,8 +142,7 @@ func ExampleInstanceCc() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
-	resp, err := approve.InstanceCc(ctx, payload)
+	resp, err := approval.InstanceCc(ctx, payload)
 
 	fmt.Println(resp, err)
 }
@@ -145,8 +151,7 @@ func ExampleSubscribe() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
-	resp, err := approve.Subscribe(ctx, payload)
+	resp, err := approval.Subscribe(ctx, payload)
 
 	fmt.Println(resp, err)
 }
@@ -155,8 +160,7 @@ func ExampleUnsubscribe() {
 	var ctx *feishu.App
 
 	payload := []byte("{}")
-
-	resp, err := approve.Unsubscribe(ctx, payload)
+	resp, err := approval.Unsubscribe(ctx, payload)
 
 	fmt.Println(resp, err)
 }
