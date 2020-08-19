@@ -2,6 +2,9 @@
 
 A fast [feishu](https://open.feishu.cn/) development sdk written in Golang
 
+[![GoDoc](https://pkg.go.dev/badge/github.com/fastwego/feishu?status.svg)](https://pkg.go.dev/github.com/fastwego/feishu?tab=doc)
+[![Go Report Card](https://goreportcard.com/badge/github.com/fastwego/feishu)](https://goreportcard.com/report/github.com/fastwego/feishu)
+
 ## 快速开始 & demo
 
 ```shell script
