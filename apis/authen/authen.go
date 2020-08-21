@@ -56,7 +56,7 @@ GET https://open.feishu.cn/open-apis/authen/v1/index?redirect_uri={REDIRECT_URI}
 func GetRedirectUri(app_id string, redirectUri string, state string) (authorizeUrl string) {
 	params := url.Values{}
 	params.Add("app_id", app_id)
-	params.Add("redirectUri", redirectUri)
+	params.Add("redirect_uri", redirectUri)
 	params.Add("state", state)
 	return feishu.FeishuServerUrl + apiGetRedirectUri + "?" + params.Encode()
 }
