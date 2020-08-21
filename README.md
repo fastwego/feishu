@@ -11,6 +11,7 @@ A fast [feishu](https://open.feishu.cn/) development sdk written in Golang
 go get github.com/fastwego/feishu
 ```
 ```go
+// 创建应用
 App = feishu.NewApp(feishu.AppConfig{
     AppId:             "APPID",
     AppSecret:         "SECRET",
