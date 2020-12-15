@@ -11,6 +11,7 @@ A fast [feishu](https://open.feishu.cn/) development sdk written in Golang
 go get github.com/fastwego/feishu
 ```
 ```go
+// 创建应用
 App = feishu.NewApp(feishu.AppConfig{
     AppId:             "APPID",
     AppSecret:         "SECRET",
@@ -79,3 +80,5 @@ FastWeGo 是一套丰富的 Go 服务开发框架，支持飞书、微信等服�
 欢迎提交 pull request / issue / 文档，一起让 Golang 开发更快更好！
 
 Faster we go together!
+
+[加入开发者交流群](https://github.com/fastwego/fastwego.dev#%E5%BC%80%E5%8F%91%E8%80%85%E4%BA%A4%E6%B5%81%E7%BE%A4)
