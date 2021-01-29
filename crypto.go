@@ -12,15 +12,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/*
-飞书开发 SDK
-*/
 package feishu
 
 import (
-	"log"
-	"os"
+	"github.com/fastwego/feishu/util"
 )
 
-// 日志记录器
-var Logger = log.New(os.Stdout, "[fastwego/feishu] ", log.LstdFlags|log.Llongfile)
+type Crypto struct {
+	EncryptKey        string
+	VerificationToken string
+}
+
+// NewCrypto 创建加解密处理器
+func NewCrypto(EncryptKey string) *Crypto {
+	return &Crypto{
+		EncryptKey: EncryptKey,
+	}
+}
+
+// GetDecryptMsg 解密消息
+func (c *Crypto) GetDecryptMsg(encryptMsg string) (decryptMsg []byte, err error) {
+
+	// 解密
+	decryptMsg, err = util.AESDecrypt(encryptMsg, []byte(c.EncryptKey))
+	if err != nil {
+		return
+	}
+
+	if Logger != nil {
+		Logger.Printf("AESDecryptMsg %s => %s", encryptMsg, string(decryptMsg))
+	}
+
+	return
+}
