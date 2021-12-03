@@ -67,17 +67,16 @@ func (client *Client) Do(req *http.Request, accessToken string) (resp []byte, er
 		return
 	}
 
-	if response.StatusCode != http.StatusOK {
-		err = fmt.Errorf("response.Status %s", response.Status)
-		return
-	}
-
 	resp, err = ioutil.ReadAll(response.Body)
 	if err != nil {
 		return
 	}
+	_ = response.Body.Close()
 
-	defer response.Body.Close()
+	if response.StatusCode != http.StatusOK {
+		err = fmt.Errorf("response.Status %s, response.Body %s", response.Status, resp)
+		return
+	}
 
 	return
 }
